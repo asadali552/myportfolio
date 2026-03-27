@@ -17,10 +17,10 @@ app.use(express.json());
 // =======================
 // 🔗 CONNECT MONGODB
 // =======================
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/portfolioDB")
   .then(() => console.log("MongoDB Connected ✅"))
   .catch(err => console.log("Mongo Error:", err));
-
+  
 // =======================
 // 👤 ADMIN (TEMP)
 // =======================
