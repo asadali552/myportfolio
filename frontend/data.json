@@ -1,0 +1,27 @@
+{
+  "info": {
+    "name": "Asad Ali",
+    "role": "Software Engineering Student",
+    "loc": "Karachi, Pakistan",
+    "email": "connect.asadali8@gmail.com",
+    "phone": "03171222948",
+    "tag": "Building modern web experiences @ FAST-NUCES",
+    "bio": "I am a 2nd-semester SE student focused on C++, Web Dev, and UI/UX.",
+    "stp": "5+"
+  },
+  "skills": [
+    { "e": "💻", "n": "C++", "l": "Intermediate", "p": 80 },
+    { "e": "🎨", "n": "UI/UX", "l": "Learning", "p": 60 },
+    {"e": "🌐","n": "Web Development","l": "Intermediate","p": 85}
+  ],
+  "projects": [
+    {
+  "t": "2D Runner Game",
+  "c": "Game Development",
+  "d": "A classic 2D runner game built using C++ and OpenGL. Features include player movement, obstacle spawning, and score tracking.",
+  "s": ["C++", "OpenGL", "Game Dev"],
+  "u": "https://github.com/asadali552/pf-runner-game",
+  "img": ""
+}
+  ]
+}
