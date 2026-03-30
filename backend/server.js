@@ -11,9 +11,8 @@ const app = express();
 // =======================
 // 🔧 MIDDLEWARE
 // =======================
-app.use(cors({
-  origin: "*"
-}));
+app.use(cors({ origin: "*" }));
+
 app.use(express.json());
 
 // =======================
