@@ -12,10 +12,7 @@ const app = express();
 // 🔧 MIDDLEWARE
 // =======================
 app.use(cors({
-  origin: [
-    "https://asadali-dev.vercel.app",
-    "https://myportfolio-livid-delta.vercel.app"
-  ]
+  origin: "*"
 }));
 app.use(express.json());
 
