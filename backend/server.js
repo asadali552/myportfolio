@@ -11,7 +11,12 @@ const app = express();
 // =======================
 // 🔧 MIDDLEWARE
 // =======================
-app.use(cors());
+app.use(cors({
+  origin: [
+    "https://asadali-dev.vercel.app",
+    "https://myportfolio-livid-delta.vercel.app"
+  ]
+}));
 app.use(express.json());
 
 // =======================
