@@ -148,8 +148,12 @@ app.put("/projects/:id", authMiddleware, async (req, res) => {
 // =======================
 // ▶️ START SERVER
 // =======================
-const PORT = process.env.PORT || 3000;
+// ... your existing code ...
 
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log("Server running on port " + PORT);
+    console.log(`Server running on port ${PORT}`);
 });
+
+// ADD THIS LINE AT THE VERY BOTTOM:
+module.exports = app;
