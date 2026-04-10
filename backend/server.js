@@ -63,6 +63,7 @@ const apiLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+
 // Apply the general limiter to all routes
 // (login gets its own stricter one applied directly on that route)
 app.use("/", apiLimiter);
@@ -149,7 +150,8 @@ const skillSchema = new mongoose.Schema({
   e: { type: String, trim: true, maxlength: 8 },                  // emoji icon
   n: { type: String, required: true, trim: true, maxlength: 40 }, // name
   l: { type: String, trim: true, maxlength: 40 },                 // level label e.g. "Intermediate"
-  p: { type: Number, min: 0, max: 100, default: 50 }              // proficiency %
+  p: { type: Number, min: 0, max: 100, default: 50 },             // proficiency %
+  cat: { type: String, trim: true, maxlength: 60, default: '' }   // category
 }, { timestamps: true });
 const Skill = mongoose.model("Skill", skillSchema);
 
@@ -295,8 +297,8 @@ app.post("/skills", auth, [
 ], async (req, res) => {
   if (!validate(req, res)) return;
   try {
-    const { e, n, l, p } = req.body;
-    res.json({ skill: await Skill.create({ e, n, l, p: Number(p) || 50 }) });
+    const { e, n, l, p, cat } = req.body;
+    res.json({ skill: await Skill.create({ e, n, l, p: Number(p) || 50, cat: cat || '' }) });
   } catch { res.status(500).json({ error: "Failed to add skill" }); }
 });
 
