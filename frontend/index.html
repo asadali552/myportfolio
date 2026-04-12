@@ -2039,12 +2039,14 @@ function escapeHtml(value) {
 (function(){
   const saved = localStorage.getItem('theme') || 'dark';
   document.documentElement.setAttribute('data-theme', saved);
-  document.getElementById('theme-btn')?.textContent = saved === 'dark' ? '☀️' : '🌙';
+  const themeBtn = document.getElementById('theme-btn');
+  if (themeBtn) themeBtn.textContent = saved === 'dark' ? '☀️' : '🌙';
 })();
 function toggleTheme(){
   const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
-  document.getElementById('theme-btn')?.textContent = next === 'dark' ? '☀️' : '🌙';
+  const themeBtn = document.getElementById('theme-btn');
+  if (themeBtn) themeBtn.textContent = next === 'dark' ? '☀️' : '🌙';
   localStorage.setItem('theme', next);
 }
 
@@ -2165,7 +2167,7 @@ let activeEditor = null;
 const editorIdMap = {
   'hero-tag':         'ie-hero-tag',
   'hero-status-text': 'ie-hero-status',
-  'abio':             'ie-abio',
+  'abio-main':        'ie-abio-main',
   'footer-logo-text': 'ie-footer-logo',
   'ai-banner-title':  'ie-ai-banner-title',
   'ai-banner-desc':   'ie-ai-banner-desc',
@@ -2369,14 +2371,20 @@ async function loginAdmin(){
     const res = await fetch(apiUrl('/login'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'admin@asad.com', password: pw }) });
     let data;
     try { data = await res.json(); }
-    catch { document.getElementById('pw-error').style.display='block'; return; }
+    catch {
+      const errEl = document.getElementById('pw-error');
+      if (errEl) errEl.style.display = 'block';
+      return;
+    }
     if(data.token){
       localStorage.setItem('token',data.token);
-      document.getElementById('pw-error').style.display='none';
+      const errEl = document.getElementById('pw-error');
+      if (errEl) errEl.style.display = 'none';
       document.getElementById('pw-input').value='';
       showDashboard();
     } else {
-      document.getElementById('pw-error').style.display='block';
+      const errEl = document.getElementById('pw-error');
+      if (errEl) errEl.style.display = 'block';
     }
   } catch { toast('Connection error','err'); }
   finally { btn.textContent='Unlock →'; btn.disabled=false; }
@@ -2392,7 +2400,8 @@ function adminLogout(){
 function switchTab(tab, btn){
   document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.admin-tab').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
-  document.getElementById('tab-'+tab).classList.add('active');
+  const tabPanel = document.getElementById('tab-'+tab);
+  if (tabPanel) tabPanel.classList.add('active');
   btn.classList.add('active'); btn.setAttribute('aria-selected','true');
   if(tab==='analytics') loadAnalytics();
 }
@@ -2425,7 +2434,8 @@ async function addItem(key, inputId) {
 
   const newList = [...(localInfo[key] || []), val];
   await updateInfoArray(key, newList);
-  document.getElementById(inputId).value = '';
+  const inpClear = document.getElementById(inputId);
+  if (inpClear) inpClear.value = '';
 }
 
 // Logic to remove item from arrays
@@ -2447,7 +2457,12 @@ async function updateInfoArray(key, list) {
     });
     if (!res.ok) { toast('Update failed', 'err'); return; }
     const data = await res.json();
-    localInfo = data.info;
+    const next = data.info != null ? data.info : data;
+    if (!next || typeof next !== 'object') {
+      toast('Update failed', 'err');
+      return;
+    }
+    localInfo = next;
     renderInfo(localInfo);
     toast('Updated ✅');
   } catch {
@@ -2463,11 +2478,12 @@ async function loadInfo(){
   } catch {}
 }
 function renderInfo(info){
+  if (!info || typeof info !== 'object') return;
   const s = (id,val) => { const el=document.getElementById(id); if(el&&val) el.textContent=val; };
   s('aname',info.name); s('arole',info.role); s('aloc',info.loc);
   s('aemail',info.email); s('aphone',info.phone); s('stp',info.stp);
   s('footer-logo-text', info.name);
-  const bio = document.getElementById('abio'); if(bio&&info.bio) bio.innerHTML=info.bio;
+  const bio = document.getElementById('abio-main'); if(bio&&info.bio) bio.innerHTML=info.bio;
   const tag = document.getElementById('hero-tag'); if(tag&&info.tag) tag.textContent=info.tag;
   if(info.avatar){
     const img=document.getElementById('av-img'), ini=document.getElementById('av-ini');
@@ -2927,7 +2943,8 @@ async function loadArticles(){
   try{
     const res=await fetch(apiUrl('/articles'));
     if(!res.ok){ renderArticles([]); return; }
-    allArticles=await res.json();
+    const raw = await res.json();
+    allArticles = Array.isArray(raw) ? raw : [];
     renderArticles(allArticles); renderArticlesAdmin(allArticles);
   } catch { renderArticles([]); }
 }
@@ -2985,18 +3002,26 @@ async function openReader(id){
     try{
       const res = await fetch(apiUrl('/articles'));
       if (!res.ok) return;
-      allArticles = await res.json();
+      const raw = await res.json();
+      allArticles = Array.isArray(raw) ? raw : [];
     } catch { return; }
   }
+  if (!Array.isArray(allArticles)) allArticles = [];
   const a=allArticles.find(x=>x._id===id); if(!a) return;
-  document.getElementById('reader-cat').textContent=a.c||'Article';
-  document.getElementById('reader-badge').textContent=a.c||'Article';
-  document.getElementById('reader-title').textContent=a.t;
-  document.getElementById('reader-date').textContent=fmtDate(a.createdAt);
-  document.getElementById('reader-read').textContent=a.r||'5 min read';
-  document.getElementById('reader-prose').innerHTML=parseMd(a.body||'');
   const reader=document.getElementById('art-reader');
   if(!reader) return;
+  const catEl = document.getElementById('reader-cat');
+  const badgeEl = document.getElementById('reader-badge');
+  const titleEl = document.getElementById('reader-title');
+  const dateEl = document.getElementById('reader-date');
+  const readEl = document.getElementById('reader-read');
+  const proseEl = document.getElementById('reader-prose');
+  if (catEl) catEl.textContent=a.c||'Article';
+  if (badgeEl) badgeEl.textContent=a.c||'Article';
+  if (titleEl) titleEl.textContent=a.t;
+  if (dateEl) dateEl.textContent=fmtDate(a.createdAt);
+  if (readEl) readEl.textContent=a.r||'5 min read';
+  if (proseEl) proseEl.innerHTML=parseMd(a.body||'');
   reader.classList.add('open'); reader.scrollTop=0;
   document.body.style.overflow='hidden';
   reader.onscroll=()=>{
@@ -3007,11 +3032,11 @@ async function openReader(id){
   };
 }
 function closeReader(){
-  document.getElementById('art-reader').classList.remove('open');
+  document.getElementById('art-reader')?.classList.remove('open');
   document.body.style.overflow='';
 }
 function parseMd(text){
-  const lines=text.split('\n'); let html='',inList=false;
+  const lines=String(text ?? '').split('\n'); let html='',inList=false;
   for(let line of lines){
     line=line.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
       .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
