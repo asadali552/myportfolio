@@ -2013,52 +2013,88 @@ body.admin-logged .footer-edit-btn { display: flex; }
 
 <!-- ═══════════ JAVASCRIPT ═══════════ -->
 <script>
+'use strict';
+
 /* ─── CONFIG ──────────────────────────────────── */
-const API = "https://devworkbyasad.vercel.app";
+const API = 'https://devworkbyasad.vercel.app';
+
+/** @param {string} path Absolute path beginning with / (e.g. "/info") */
+function apiUrl(path) {
+  const p = path.startsWith('/') ? path : `/${path}`;
+  return `${API}${p}`;
+}
+
+/** Escape text for safe insertion into HTML (text nodes / attributes). */
+function escapeHtml(value) {
+  if (value == null) return '';
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
 
 /* ─── THEME ───────────────────────────────────── */
 (function(){
   const saved = localStorage.getItem('theme') || 'dark';
   document.documentElement.setAttribute('data-theme', saved);
-  document.getElementById('theme-btn').textContent = saved === 'dark' ? '☀️' : '🌙';
+  document.getElementById('theme-btn')?.textContent = saved === 'dark' ? '☀️' : '🌙';
 })();
 function toggleTheme(){
   const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
-  document.getElementById('theme-btn').textContent = next === 'dark' ? '☀️' : '🌙';
+  document.getElementById('theme-btn')?.textContent = next === 'dark' ? '☀️' : '🌙';
   localStorage.setItem('theme', next);
 }
 
 /* ─── ADMIN STATE ─────────────────────────────── */
 function setAdminState(loggedIn){
   document.body.classList.toggle('admin-logged', loggedIn);
+  document.documentElement.style.setProperty('--admin-display', loggedIn ? 'inline' : 'none');
 }
 (function(){ if(localStorage.getItem('token')) setAdminState(true); })();
 
 /* ─── SCROLL PROGRESS ─────────────────────────── */
 window.addEventListener('scroll', () => {
-  const pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-  document.getElementById('progress-bar').style.width = pct + '%';
+  const doc = document.documentElement;
+  const max = doc.scrollHeight - window.innerHeight;
+  const pct = max > 0 ? (window.scrollY / max) * 100 : 0;
+  const bar = document.getElementById('progress-bar');
+  if (bar) bar.style.width = `${pct}%`;
 }, { passive: true });
 
 /* ─── CURSOR ──────────────────────────────────── */
 const dot = document.getElementById('cursor-dot');
 const ring = document.getElementById('cursor-ring');
-if(dot){
-  let mx=0,my=0,rx=0,ry=0;
-  document.addEventListener('mousemove', e => {
-    mx=e.clientX; my=e.clientY;
-    dot.style.left=mx+'px'; dot.style.top=my+'px';
-  }, { passive:true });
-  (function animRing(){
-    rx += (mx-rx)*0.10; ry += (my-ry)*0.10;
-    ring.style.left=rx+'px'; ring.style.top=ry+'px';
+if (dot && ring) {
+  let mx = 0;
+  let my = 0;
+  let rx = 0;
+  let ry = 0;
+  document.addEventListener('mousemove', (e) => {
+    mx = e.clientX;
+    my = e.clientY;
+    dot.style.left = `${mx}px`;
+    dot.style.top = `${my}px`;
+  }, { passive: true });
+  (function animRing() {
+    rx += (mx - rx) * 0.1;
+    ry += (my - ry) * 0.1;
+    ring.style.left = `${rx}px`;
+    ring.style.top = `${ry}px`;
     requestAnimationFrame(animRing);
   })();
   const hov = 'a,button,.skill-cat-card,.project-card,.featured-project,.article-item,.social-btn,.id-row,.contact-link-row';
-  document.querySelectorAll(hov).forEach(el => {
-    el.addEventListener('mouseenter', () => { dot.classList.add('big'); ring.classList.add('vis'); });
-    el.addEventListener('mouseleave', () => { dot.classList.remove('big'); ring.classList.remove('vis'); });
+  document.querySelectorAll(hov).forEach((el) => {
+    el.addEventListener('mouseenter', () => {
+      dot.classList.add('big');
+      ring.classList.add('vis');
+    });
+    el.addEventListener('mouseleave', () => {
+      dot.classList.remove('big');
+      ring.classList.remove('vis');
+    });
   });
 }
 
@@ -2070,7 +2106,7 @@ document.querySelectorAll('.nav-links a').forEach(a => {
   navMap[a.getAttribute('href').slice(1)] = a;
 });
 window.addEventListener('scroll', () => {
-  navEl.classList.toggle('scrolled', window.scrollY > 50);
+  navEl?.classList.toggle('scrolled', window.scrollY > 50);
   let current = '';
   secIds.forEach(id => {
     const el = document.getElementById(id);
@@ -2088,7 +2124,7 @@ const revObs = new IntersectionObserver(entries => {
 document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
 
 /* ─── ANALYTICS HIT ───────────────────────────── */
-fetch(`${API}/analytics/hit`, { method:'POST' }).catch(()=>{});
+fetch(apiUrl('/analytics/hit'), { method: 'POST' }).catch(() => {});
 
 /* ─── ADMIN ROUTE ─────────────────────────────── */
 window.addEventListener('load', () => {
@@ -2104,10 +2140,14 @@ const tok = () => localStorage.getItem('token');
 const authH = () => ({ 'Content-Type':'application/json', 'Authorization':tok() });
 
 /* ─── TOAST ───────────────────────────────────── */
-function toast(msg, type=''){
+let toastTimerId = 0;
+function toast(msg, type = '') {
   const t = document.getElementById('toast');
-  t.textContent=msg; t.className='show '+(type||'');
-  clearTimeout(t._t); t._t=setTimeout(()=>{ t.className=''; },4000);
+  if (!t) return;
+  t.textContent = msg;
+  t.className = `show ${type || ''}`.trim();
+  clearTimeout(toastTimerId);
+  toastTimerId = setTimeout(() => { t.className = ''; }, 4000);
 }
 
 /* ─── RESUME ──────────────────────────────────── */
@@ -2144,10 +2184,10 @@ function openInlineEditor(elementId, infoKey, label, rows){
 
   const currentText = el.innerText || el.textContent;
   editor.innerHTML = `
-    <textarea style="min-height:${rows * 28}px" placeholder="${label}">${currentText}</textarea>
+    <textarea style="min-height:${rows * 28}px" placeholder="${escapeHtml(label)}">${escapeHtml(currentText)}</textarea>
     <div class="inline-editor-actions">
-      <button class="ie-save" onclick="saveInlineEdit('${elementId}','${infoKey}','${edId}')">Save</button>
-      <button class="ie-cancel" onclick="closeAllEditors()">Cancel</button>
+      <button type="button" class="ie-save" onclick="saveInlineEdit('${elementId}','${infoKey}','${edId}')">Save</button>
+      <button type="button" class="ie-cancel" onclick="closeAllEditors()">Cancel</button>
     </div>
   `;
   editor.classList.add('open');
@@ -2166,10 +2206,10 @@ function openFooterCopyEditor(){
   const editor = document.getElementById('ie-footer-copy');
   const currentText = el.textContent;
   editor.innerHTML = `
-    <input type="text" value="${currentText}" placeholder="Footer text" style="min-width:240px">
+    <input type="text" value="${escapeHtml(currentText)}" placeholder="Footer text" style="min-width:240px">
     <div class="inline-editor-actions">
-      <button class="ie-save" onclick="saveFooterCopy('ie-footer-copy')">Save</button>
-      <button class="ie-cancel" onclick="closeAllEditors()">Cancel</button>
+      <button type="button" class="ie-save" onclick="saveFooterCopy('ie-footer-copy')">Save</button>
+      <button type="button" class="ie-cancel" onclick="closeAllEditors()">Cancel</button>
     </div>
   `;
   editor.classList.add('open');
@@ -2208,11 +2248,12 @@ async function saveInlineEdit(elementId, infoKey, editorId){
   // Persist to API
   if(infoKey && tok()){
     try{
-      await fetch(`${API}/info`, {
+      const putRes = await fetch(apiUrl('/info'), {
         method:'PUT',
         headers: authH(),
         body: JSON.stringify({ [infoKey]: newText })
       });
+      if (!putRes.ok) throw new Error('Save failed');
       // Also save AI banner fields to localStorage as backup
       if(infoKey === 'aiTitle') localStorage.setItem('aiBannerTitle', newText);
       if(infoKey === 'aiDesc')  localStorage.setItem('aiBannerDesc', newText);
@@ -2265,13 +2306,13 @@ function renderAiTags(){
 
   container.innerHTML = tags.map((tag, i) => `
     <span class="ai-tag">
-      ${tag}
-      <button class="ai-tag-x" onclick="removeAiTag(${i})" title="Remove tag">✕</button>
+      ${escapeHtml(tag)}
+      <button type="button" class="ai-tag-x" onclick="removeAiTag(${i})" title="Remove tag">✕</button>
     </span>
   `).join('') + `
     <span class="ai-add-tag-row">
       <input class="ai-add-tag-input" id="ai-tag-input" type="text" placeholder="New tag…" onkeydown="if(event.key==='Enter')addAiTag()">
-      <button class="ai-add-tag-btn" onclick="addAiTag()">+</button>
+      <button type="button" class="ai-add-tag-btn" onclick="addAiTag()">+</button>
     </span>
   `;
 }
@@ -2291,7 +2332,7 @@ function addAiTag(){
 function removeAiTag(index){
   if(!tok()) return;
   const tags = getAiTags();
-  const removed = tags.splice(index, 1);
+  tags.splice(index, 1);
   saveAiTags(tags);
   renderAiTags();
   toast(`Removed`);
@@ -2322,10 +2363,13 @@ function showDashboard(){
 async function loginAdmin(){
   const pw = document.getElementById('pw-input').value; if(!pw) return;
   const btn = document.querySelector('#pw-screen .abtn');
+  if(!btn) return;
   btn.textContent='Checking…'; btn.disabled=true;
   try{
-    const res = await fetch(`${API}/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email:'admin@asad.com',password:pw}) });
-    const data = await res.json();
+    const res = await fetch(apiUrl('/login'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'admin@asad.com', password: pw }) });
+    let data;
+    try { data = await res.json(); }
+    catch { document.getElementById('pw-error').style.display='block'; return; }
     if(data.token){
       localStorage.setItem('token',data.token);
       document.getElementById('pw-error').style.display='none';
@@ -2335,7 +2379,7 @@ async function loginAdmin(){
       document.getElementById('pw-error').style.display='block';
     }
   } catch { toast('Connection error','err'); }
-  btn.textContent='Unlock →'; btn.disabled=false;
+  finally { btn.textContent='Unlock →'; btn.disabled=false; }
 }
 function adminLogout(){
   localStorage.removeItem('token');
@@ -2360,7 +2404,9 @@ async function loadAllPublic(){
 async function loadAdminData(){
   await loadAllPublic();
   try{
-    const info = await fetch(`${API}/info`).then(r=>r.json());
+    const res = await fetch(apiUrl('/info'));
+    if (!res.ok) return;
+    const info = await res.json();
     sv('ai-name',info.name); sv('ai-role',info.role); sv('ai-loc',info.loc);
     sv('ai-email',info.email); sv('ai-phone',info.phone);
     sv('ai-tag',info.tag); sv('ai-bio',info.bio); sv('ai-stp',info.stp);
@@ -2369,56 +2415,12 @@ async function loadAdminData(){
   } catch {}
 }
 
-//new change
-
-let localInfo = {}; // Global reference to current info
-
-async function loadInfo() {
-  try {
-    const info = await fetch(`${API}/info`).then(r => r.ok ? r.json() : null);
-    if (info) {
-      localInfo = info;
-      renderInfo(info);
-    }
-  } catch {}
-}
-
-function renderInfo(info) {
-  // ... existing logic for name, role, email, etc. ...
-  
-  // New: Render detailed About Description
-  const adesc = document.getElementById('about-desc-text');
-  if(adesc && info.aboutDesc) adesc.innerHTML = info.aboutDesc;
-
-  // New: Render Currently List
-  const cList = document.getElementById('currently-list');
-  if(cList) {
-    const items = info.currently || [];
-    cList.innerHTML = items.map((item, i) => `
-      <div class="currently-item">
-        ${item}
-        <button class="scc-pill-x" style="margin-left:auto; display:var(--admin-display, none)" onclick="removeItem('currently', ${i})">✕</button>
-      </div>
-    `).join('');
-  }
-
-  // New: Render Gigs List
-  const gList = document.getElementById('gigs-list');
-  if(gList) {
-    const items = info.gigs || [];
-    gList.innerHTML = items.map((item, i) => `
-      <div class="currently-item">
-        ${item}
-        <button class="scc-pill-x" style="margin-left:auto; display:var(--admin-display, none)" onclick="removeItem('gigs', ${i})">✕</button>
-      </div>
-    `).join('');
-  }
-}
+let localInfo = {};
 
 // Logic to add item to arrays
 async function addItem(key, inputId) {
   if(!tok()) return toast('Login first', 'err');
-  const val = document.getElementById(inputId).value.trim();
+  const val = document.getElementById(inputId)?.value?.trim();
   if(!val) return;
 
   const newList = [...(localInfo[key] || []), val];
@@ -2429,18 +2431,21 @@ async function addItem(key, inputId) {
 // Logic to remove item from arrays
 async function removeItem(key, index) {
   if(!tok()) return;
-  const newList = [...localInfo[key]];
+  const cur = localInfo[key];
+  if(!Array.isArray(cur) || index < 0 || index >= cur.length) return;
+  const newList = [...cur];
   newList.splice(index, 1);
   await updateInfoArray(key, newList);
 }
 
 async function updateInfoArray(key, list) {
   try {
-    const res = await fetch(`${API}/info`, {
+    const res = await fetch(apiUrl('/info'), {
       method: 'PUT',
       headers: authH(),
       body: JSON.stringify({ [key]: list })
     });
+    if (!res.ok) { toast('Update failed', 'err'); return; }
     const data = await res.json();
     localInfo = data.info;
     renderInfo(localInfo);
@@ -2450,18 +2455,11 @@ async function updateInfoArray(key, list) {
   }
 }
 
-// Modify setAdminState to handle the new buttons
-function setAdminState(loggedIn) {
-  document.body.classList.toggle('admin-logged', loggedIn);
-  // Custom CSS variable to show/hide array delete buttons
-  document.documentElement.style.setProperty('--admin-display', loggedIn ? 'inline' : 'none');
-}
-
 /* ─── INFO ────────────────────────────────────── */
 async function loadInfo(){
   try{
-    const info = await fetch(`${API}/info`).then(r=>r.ok?r.json():null);
-    if(info) renderInfo(info);
+    const info = await fetch(apiUrl('/info')).then((r) => (r.ok ? r.json() : null));
+    if(info){ localInfo = info; renderInfo(info); }
   } catch {}
 }
 function renderInfo(info){
@@ -2499,6 +2497,31 @@ function renderInfo(info){
   showLink('ci-fv','soc-fv','sbl-fv',info.fv);
   if(info.resume) localStorage.setItem('resumeUrl',info.resume);
   if(info.name) document.title=`${info.name} — Full Stack Developer | Karachi, Pakistan`;
+
+  const adesc = document.getElementById('about-desc-text');
+  if(adesc && info.aboutDesc) adesc.innerHTML = info.aboutDesc;
+
+  const cList = document.getElementById('currently-list');
+  if(cList){
+    const items = info.currently || [];
+    cList.innerHTML = items.map((item, i) => `
+      <div class="currently-item">
+        ${escapeHtml(item)}
+        <button type="button" class="scc-pill-x" style="margin-left:auto; display:var(--admin-display, none)" onclick="removeItem('currently', ${i})">✕</button>
+      </div>
+    `).join('');
+  }
+
+  const gList = document.getElementById('gigs-list');
+  if(gList){
+    const items = info.gigs || [];
+    gList.innerHTML = items.map((item, i) => `
+      <div class="currently-item">
+        ${escapeHtml(item)}
+        <button type="button" class="scc-pill-x" style="margin-left:auto; display:var(--admin-display, none)" onclick="removeItem('gigs', ${i})">✕</button>
+      </div>
+    `).join('');
+  }
 }
 async function saveInfo(){
   if(!tok()){ toast('Not logged in','err'); return; }
@@ -2506,18 +2529,27 @@ async function saveInfo(){
   if(avatarImg) body.avatar=avatarImg;
   Object.keys(body).forEach(k=>{ if(!body[k]) delete body[k]; });
   try{
-    const res = await fetch(`${API}/info`, { method:'PUT', headers:authH(), body:JSON.stringify(body) });
+    const res = await fetch(apiUrl('/info'), { method:'PUT', headers:authH(), body:JSON.stringify(body) });
     if(res.status===401){ toast('Session expired','err'); adminLogout(); return; }
-    const d=await res.json(); renderInfo(d.info||d); toast('Info saved ✅');
+    if(!res.ok){ toast('Save failed','err'); return; }
+    const d=await res.json();
+    const info=d.info||d;
+    localInfo=info;
+    renderInfo(info);
+    toast('Info saved ✅');
   } catch { toast('Save failed','err'); }
 }
 async function saveSettings(){
   if(!tok()){ toast('Not logged in','err'); return; }
   try{
     const body = { fv:v('s-fv'),gh:v('s-gh'),li:v('s-li'),resume:v('s-resume') };
-    const res = await fetch(`${API}/info`, { method:'PUT', headers:authH(), body:JSON.stringify(body) });
+    const res = await fetch(apiUrl('/info'), { method:'PUT', headers:authH(), body:JSON.stringify(body) });
     if(res.status===401){ toast('Session expired','err'); adminLogout(); return; }
-    renderInfo((await res.json()).info); toast('Links saved ✅');
+    if(!res.ok){ toast('Save failed','err'); return; }
+    const info=(await res.json()).info;
+    localInfo=info;
+    renderInfo(info);
+    toast('Links saved ✅');
   } catch { toast('Save failed','err'); }
 }
 
@@ -2545,7 +2577,7 @@ let _cachedSkills = [];
 
 async function loadSkills(){
   try{
-    const skills = await fetch(`${API}/skills`).then(r=>r.ok?r.json():[]);
+    const skills = await fetch(apiUrl('/skills')).then((r) => (r.ok ? r.json() : []));
     _cachedSkills = skills;
     renderSkillCategories(skills);
     renderAiTags();
@@ -2602,15 +2634,15 @@ function renderSkillCategories(skills){
       <div class="skill-cat-card" role="listitem">
         <div class="scc-header">
           <span class="scc-icon" aria-hidden="true">${cat.icon}</span>
-          <span class="scc-title">${cat.name}</span>
+          <span class="scc-title">${escapeHtml(cat.name)}</span>
           <span class="scc-count">${items.length}</span>
-          <button class="scc-del-cat" onclick="event.stopPropagation();inlineDeleteCategory('${cat.id}')" title="Delete category">✕</button>
+          <button type="button" class="scc-del-cat" onclick="event.stopPropagation();inlineDeleteCategory('${cat.id}')" title="Delete category">✕</button>
         </div>
         <div class="scc-pills">
           ${items.map(item => `
             <span class="scc-pill${(item.p||0) >= 70 ? ' primary' : ''}">
-              ${item.n}
-              <button class="scc-pill-x" onclick="inlineRemoveSkill('${item._id}')" title="Remove skill">✕</button>
+              ${escapeHtml(item.n)}
+              <button type="button" class="scc-pill-x" onclick="inlineRemoveSkill('${item._id}')" title="Remove skill">✕</button>
             </span>
           `).join('')}
           ${items.length === 0 ? '<span style="font-size:10px;color:var(--ink-3);display:none" class="empty-hint">Add your first skill below ↓</span>' : ''}
@@ -2619,7 +2651,7 @@ function renderSkillCategories(skills){
         <div class="scc-add-row">
           <input class="scc-add-input" id="scc-inp-${cat.id}" type="text" placeholder="Skill name…" onkeydown="if(event.key==='Enter')inlineAddSkill('${cat.id}')">
           <input class="scc-add-perc" id="scc-pct-${cat.id}" type="number" min="0" max="100" value="70" placeholder="%">
-          <button class="scc-add-btn-inline" onclick="inlineAddSkill('${cat.id}')">+ Add</button>
+          <button type="button" class="scc-add-btn-inline" onclick="inlineAddSkill('${cat.id}')">+ Add</button>
         </div>
       </div>
     `;
@@ -2640,12 +2672,13 @@ async function inlineAddSkill(catId){
   if(!name){ toast('Enter a skill name','err'); return; }
   const p = parseInt(percInput?.value) || 70;
   try{
-    const res = await fetch(`${API}/skills`, {
+    const res = await fetch(apiUrl('/skills'), {
       method:'POST',
       headers: authH(),
       body: JSON.stringify({ n: name, p, cat: catId, e: '' })
     });
     if(res.status===401){ adminLogout(); return; }
+    if(!res.ok){ toast('Failed to add skill','err'); return; }
     if(nameInput) nameInput.value = '';
     await refreshSkills();
     toast(`"${name}" added ✅`);
@@ -2656,7 +2689,7 @@ async function inlineRemoveSkill(skillId){
   if(!tok()) return;
   if(!confirm('Remove this skill?')) return;
   try{
-    await fetch(`${API}/skills/${skillId}`, { method:'DELETE', headers:{'Authorization':tok()} });
+    await fetch(apiUrl(`/skills/${skillId}`), { method:'DELETE', headers:{'Authorization':tok()} });
     await refreshSkills();
     toast('Skill removed');
   } catch { toast('Failed','err'); }
@@ -2691,7 +2724,7 @@ function inlineDeleteCategory(catId){
 
 async function refreshSkills(){
   try{
-    const skills = await fetch(`${API}/skills`).then(r=>r.ok?r.json():[]);
+    const skills = await fetch(apiUrl('/skills')).then((r) => (r.ok ? r.json() : []));
     _cachedSkills = skills;
     renderSkillCategories(skills);
     if(tok()) renderSkillsAdminCats(skills);
@@ -2721,17 +2754,17 @@ function renderSkillsAdminCats(skills){
       <div class="skill-cat-box" id="scb-${cat.id}">
         <div class="scb-header" onclick="toggleCatBox('${cat.id}')">
           <span class="scb-icon">${cat.icon}</span>
-          <span class="scb-name">${cat.name}</span>
+          <span class="scb-name">${escapeHtml(cat.name)}</span>
           <span class="scb-count">${items.length}</span>
-          <button class="scb-del" onclick="event.stopPropagation();deleteCategory('${cat.id}')" title="Delete category">🗑</button>
+          <button type="button" class="scb-del" onclick="event.stopPropagation();deleteCategory('${cat.id}')" title="Delete category">🗑</button>
           <span class="scb-toggle" id="scbt-${cat.id}">▼</span>
         </div>
         <div class="scb-body" id="scbb-${cat.id}">
           <div class="scb-skills" id="scbs-${cat.id}">
             ${items.map(s => `
               <span class="scb-skill-pill${(s.p||0)>=70?' primary':''}">
-                ${s.e||''} ${s.n}
-                <button class="scb-pill-del" onclick="removeSkillFromCat('${s._id}','${cat.id}')" title="Remove">✕</button>
+                ${escapeHtml(s.e||'')} ${escapeHtml(s.n)}
+                <button type="button" class="scb-pill-del" onclick="removeSkillFromCat('${s._id}','${cat.id}')" title="Remove">✕</button>
               </span>
             `).join('')}
             ${items.length === 0 ? '<span style="font-size:10px;color:var(--ink-3);padding:4px">Empty — add skills below</span>' : ''}
@@ -2739,7 +2772,7 @@ function renderSkillsAdminCats(skills){
           <div class="scb-add-row">
             <input class="scb-add-input" id="scbi-${cat.id}" type="text" placeholder="Skill name (e.g. React)" onkeydown="if(event.key==='Enter')addSkillToCat('${cat.id}')">
             <input class="scb-add-level" id="scbp-${cat.id}" type="number" min="0" max="100" placeholder="%" value="70">
-            <button class="scb-add-btn" onclick="addSkillToCat('${cat.id}')">+ Add</button>
+            <button type="button" class="scb-add-btn" onclick="addSkillToCat('${cat.id}')">+ Add</button>
           </div>
         </div>
       </div>
@@ -2763,12 +2796,13 @@ async function addSkillToCat(catId){
   if(!name){ toast('Skill name required','err'); return; }
   const p = parseInt(percInput?.value)||70;
   try{
-    const res = await fetch(`${API}/skills`, {
+    const res = await fetch(apiUrl('/skills'), {
       method:'POST',
       headers: authH(),
       body: JSON.stringify({ n: name, p, cat: catId, e: '' })
     });
     if(res.status===401){ adminLogout(); return; }
+    if(!res.ok){ toast('Failed','err'); return; }
     if(nameInput) nameInput.value='';
     await refreshSkills();
     toast(`Added to ${catId} ✅`);
@@ -2778,7 +2812,7 @@ async function addSkillToCat(catId){
 async function removeSkillFromCat(skillId, catId){
   if(!tok()) return;
   try{
-    await fetch(`${API}/skills/${skillId}`, { method:'DELETE', headers:{'Authorization':tok()} });
+    await fetch(apiUrl(`/skills/${skillId}`), { method:'DELETE', headers:{'Authorization':tok()} });
     await refreshSkills();
     toast('Removed');
   } catch { toast('Failed','err'); }
@@ -2811,7 +2845,7 @@ function deleteCategory(catId){
 /* ─── PROJECTS ────────────────────────────────── */
 async function loadProjects(){
   try{
-    const projects=await fetch(`${API}/projects`).then(r=>r.ok?r.json():[]);
+    const projects=await fetch(apiUrl('/projects')).then((r) => (r.ok ? r.json() : []));
     renderProjects(projects); renderProjectsAdmin(projects);
   } catch { renderProjects([]); }
 }
@@ -2829,18 +2863,18 @@ function renderProjects(projects){
     fw.innerHTML=`
       <article class="featured-project reveal" itemscope itemtype="https://schema.org/CreativeWork">
         <div class="featured-img">
-          ${feat.img?`<img src="${feat.img}" alt="${feat.t} — project screenshot by Asad Ali" loading="lazy" itemprop="image">`:'🖼️'}
+          ${feat.img?`<img src="${feat.img}" alt="${escapeHtml(feat.t)} — project screenshot by Asad Ali" loading="lazy" itemprop="image">`:'🖼️'}
           ${feat.u?`<div class="featured-img-overlay"><a class="overlay-btn" href="${feat.u}" target="_blank" rel="noopener noreferrer">View Live →</a></div>`:''}
         </div>
         <div class="featured-body">
-          <div class="featured-eyebrow">Featured · ${feat.c||'Web Dev'}</div>
-          <h3 class="featured-title" itemprop="name">${feat.t}</h3>
+          <div class="featured-eyebrow">Featured · ${escapeHtml(feat.c||'Web Dev')}</div>
+          <h3 class="featured-title" itemprop="name">${escapeHtml(feat.t)}</h3>
           <div class="case-rows">
-            ${feat.d?`<div class="case-row"><span class="case-key">What</span>${feat.d}</div>`:''}
-            ${feat.problem?`<div class="case-row"><span class="case-key">Problem</span>${feat.problem}</div>`:''}
-            ${feat.result?`<div class="case-row"><span class="case-key">Result</span>${feat.result}</div>`:''}
+            ${feat.d?`<div class="case-row"><span class="case-key">What</span>${escapeHtml(feat.d)}</div>`:''}
+            ${feat.problem?`<div class="case-row"><span class="case-key">Problem</span>${escapeHtml(feat.problem)}</div>`:''}
+            ${feat.result?`<div class="case-row"><span class="case-key">Result</span>${escapeHtml(feat.result)}</div>`:''}
           </div>
-          <div class="stack-tags">${(feat.s||[]).map(x=>`<span class="tag">${x}</span>`).join('')}</div>
+          <div class="stack-tags">${(feat.s||[]).map(x=>`<span class="tag">${escapeHtml(x)}</span>`).join('')}</div>
           ${feat.u?`<a class="project-link" href="${feat.u}" target="_blank" rel="noopener noreferrer" itemprop="url">View Live →</a>`:''}
         </div>
       </article>`;
@@ -2850,14 +2884,14 @@ function renderProjects(projects){
   grid.innerHTML=rest.map(p=>`
     <article class="project-card" role="listitem" itemscope itemtype="https://schema.org/CreativeWork">
       <div class="project-thumb">
-        ${p.img?`<img src="${p.img}" alt="${p.t} project by Asad Ali" loading="lazy" itemprop="image">`:'🖼️'}
+        ${p.img?`<img src="${p.img}" alt="${escapeHtml(p.t)} project by Asad Ali" loading="lazy" itemprop="image">`:'🖼️'}
         ${p.u?`<div class="project-overlay"><a class="overlay-btn" href="${p.u}" target="_blank" rel="noopener noreferrer">View Live →</a></div>`:''}
       </div>
       <div class="project-body">
-        <span class="project-cat">${p.c||'Project'}</span>
-        <div class="project-title" itemprop="name">${p.t}</div>
-        <div class="project-desc" itemprop="description">${p.d||''}</div>
-        <div class="stack-tags">${(p.s||[]).map(x=>`<span class="tag">${x}</span>`).join('')}</div>
+        <span class="project-cat">${escapeHtml(p.c||'Project')}</span>
+        <div class="project-title" itemprop="name">${escapeHtml(p.t)}</div>
+        <div class="project-desc" itemprop="description">${escapeHtml(p.d||'')}</div>
+        <div class="stack-tags">${(p.s||[]).map(x=>`<span class="tag">${escapeHtml(x)}</span>`).join('')}</div>
         ${p.u?`<a class="project-link" href="${p.u}" target="_blank" rel="noopener noreferrer" itemprop="url" style="margin-top:6px;display:inline-flex;">View Live →</a>`:''}
       </div>
     </article>`).join('');
@@ -2865,7 +2899,7 @@ function renderProjects(projects){
 function renderProjectsAdmin(projects){
   const box=document.getElementById('projects-list-admin'); if(!box) return;
   box.innerHTML=projects.length
-    ? projects.map(p=>`<div class="item-row"><div class="item-info"><div class="item-name">${p.t}</div><div class="item-sub">${p.c||''}</div></div><button onclick="removeProject('${p._id}')" aria-label="Remove ${p.t}">✕</button></div>`).join('')
+    ? projects.map(p=>`<div class="item-row"><div class="item-info"><div class="item-name">${escapeHtml(p.t)}</div><div class="item-sub">${escapeHtml(p.c||'')}</div></div><button type="button" onclick="removeProject('${p._id}')" aria-label="Remove ${escapeHtml(p.t)}">✕</button></div>`).join('')
     : '<p style="font-size:12px;color:var(--ink-2)">No projects yet.</p>';
 }
 let projectImg='';
@@ -2873,8 +2907,9 @@ async function addProject(){
   if(!tok()){ toast('Not logged in','err'); return; }
   const t=v('np-t'); if(!t){ toast('Title required','err'); return; }
   try{
-    const res=await fetch(`${API}/projects`, { method:'POST', headers:authH(), body:JSON.stringify({t,c:v('np-c'),u:v('np-u'),d:v('np-d'),problem:v('np-problem'),result:v('np-result'),s:v('np-s').split(',').map(x=>x.trim()).filter(Boolean),img:projectImg||''}) });
+    const res=await fetch(apiUrl('/projects'), { method:'POST', headers:authH(), body:JSON.stringify({t,c:v('np-c'),u:v('np-u'),d:v('np-d'),problem:v('np-problem'),result:v('np-result'),s:v('np-s').split(',').map(x=>x.trim()).filter(Boolean),img:projectImg||''}) });
     if(res.status===401){ adminLogout(); return; }
+    if(!res.ok){ toast('Failed','err'); return; }
     await loadProjects(); ['np-t','np-c','np-u','np-d','np-problem','np-result','np-s'].forEach(id=>sv(id,''));
     projectImg=''; const prev=document.getElementById('pj-prev'); if(prev){ prev.src=''; prev.style.display='none'; }
     toast('Project added ✅');
@@ -2882,20 +2917,21 @@ async function addProject(){
 }
 async function removeProject(id){
   if(!tok()||!confirm('Remove this project?')) return;
-  try{ await fetch(`${API}/projects/${id}`, { method:'DELETE', headers:{'Authorization':tok()} }); await loadProjects(); toast('Removed'); }
+  try{ await fetch(apiUrl(`/projects/${id}`), { method:'DELETE', headers:{'Authorization':tok()} }); await loadProjects(); toast('Removed'); }
   catch { toast('Failed','err'); }
 }
 
 /* ─── ARTICLES ────────────────────────────────── */
 let allArticles=[];
-window.loadArticles=async function(){
+async function loadArticles(){
   try{
-    const res=await fetch(`${API}/articles`);
+    const res=await fetch(apiUrl('/articles'));
     if(!res.ok){ renderArticles([]); return; }
     allArticles=await res.json();
     renderArticles(allArticles); renderArticlesAdmin(allArticles);
   } catch { renderArticles([]); }
-};
+}
+window.loadArticles = loadArticles;
 function renderArticles(articles){
   const box=document.getElementById('articles-list'); if(!box) return;
   if(!articles.length){
@@ -2904,18 +2940,18 @@ function renderArticles(articles){
   }
   box.innerHTML=articles.map(a=>`
     <article class="article-item" onclick="openReader('${a._id}')" role="listitem" tabindex="0"
-      aria-label="${a.t}" onkeydown="if(event.key==='Enter')openReader('${a._id}')"
+      aria-label="${escapeHtml(a.t)}" onkeydown="if(event.key==='Enter')openReader('${a._id}')"
       itemscope itemtype="https://schema.org/Article">
       <div>
         <div class="article-meta">
-          <span class="article-cat">${a.c||'Article'}</span>
+          <span class="article-cat">${escapeHtml(a.c||'Article')}</span>
           <div class="meta-sep" aria-hidden="true"></div>
           <span class="article-date">${fmtDate(a.createdAt)}</span>
           <div class="meta-sep" aria-hidden="true"></div>
-          <span class="article-read">${a.r||'5 min read'}</span>
+          <span class="article-read">${escapeHtml(a.r||'5 min read')}</span>
         </div>
-        <h3 class="article-title" itemprop="headline">${a.t}</h3>
-        <p class="article-excerpt" itemprop="description">${a.e||''}</p>
+        <h3 class="article-title" itemprop="headline">${escapeHtml(a.t)}</h3>
+        <p class="article-excerpt" itemprop="description">${escapeHtml(a.e||'')}</p>
       </div>
       <div class="article-arrow" aria-hidden="true">↗</div>
     </article>`).join('');
@@ -2923,7 +2959,7 @@ function renderArticles(articles){
 function renderArticlesAdmin(articles){
   const box=document.getElementById('articles-list-admin'); if(!box) return;
   box.innerHTML=articles.length
-    ? articles.map(a=>`<div class="item-row"><div class="item-info"><div class="item-name">${a.t}</div><div class="item-sub">${a.c||''} · ${fmtDate(a.createdAt)}</div></div><button onclick="removeArticle('${a._id}')" aria-label="Remove article">✕</button></div>`).join('')
+    ? articles.map(a=>`<div class="item-row"><div class="item-info"><div class="item-name">${escapeHtml(a.t)}</div><div class="item-sub">${escapeHtml(a.c||'')} · ${fmtDate(a.createdAt)}</div></div><button type="button" onclick="removeArticle('${a._id}')" aria-label="Remove article">✕</button></div>`).join('')
     : '<p style="font-size:12px;color:var(--ink-2)">No articles yet.</p>';
 }
 async function addArticle(){
@@ -2931,21 +2967,26 @@ async function addArticle(){
   const t=v('na-t'); if(!t){ toast('Title required','err'); return; }
   const body=v('na-body'); if(!body){ toast('Content required','err'); return; }
   try{
-    const res=await fetch(`${API}/articles`, { method:'POST', headers:authH(), body:JSON.stringify({t,c:v('na-c'),r:v('na-r'),e:v('na-e'),body}) });
+    const res=await fetch(apiUrl('/articles'), { method:'POST', headers:authH(), body:JSON.stringify({t,c:v('na-c'),r:v('na-r'),e:v('na-e'),body}) });
     if(res.status===401){ adminLogout(); return; }
+    if(!res.ok){ toast('Failed','err'); return; }
     await loadArticles(); ['na-t','na-c','na-r','na-e','na-body'].forEach(id=>sv(id,'')); toast('Article published ✅');
   } catch { toast('Failed','err'); }
 }
 async function removeArticle(id){
   if(!tok()||!confirm('Delete this article?')) return;
-  try{ await fetch(`${API}/articles/${id}`, { method:'DELETE', headers:{'Authorization':tok()} }); await loadArticles(); toast('Deleted'); }
+  try{ await fetch(apiUrl(`/articles/${id}`), { method:'DELETE', headers:{'Authorization':tok()} }); await loadArticles(); toast('Deleted'); }
   catch { toast('Failed','err'); }
 }
 
 /* ─── READER ──────────────────────────────────── */
 async function openReader(id){
   if(!allArticles.length){
-    try{ allArticles=await fetch(`${API}/articles`).then(r=>r.json()); } catch { return; }
+    try{
+      const res = await fetch(apiUrl('/articles'));
+      if (!res.ok) return;
+      allArticles = await res.json();
+    } catch { return; }
   }
   const a=allArticles.find(x=>x._id===id); if(!a) return;
   document.getElementById('reader-cat').textContent=a.c||'Article';
@@ -2955,11 +2996,14 @@ async function openReader(id){
   document.getElementById('reader-read').textContent=a.r||'5 min read';
   document.getElementById('reader-prose').innerHTML=parseMd(a.body||'');
   const reader=document.getElementById('art-reader');
+  if(!reader) return;
   reader.classList.add('open'); reader.scrollTop=0;
   document.body.style.overflow='hidden';
   reader.onscroll=()=>{
-    const pct=(reader.scrollTop/(reader.scrollHeight-reader.clientHeight))*100;
-    document.getElementById('reader-prog').style.width=Math.min(100,pct)+'%';
+    const max = reader.scrollHeight - reader.clientHeight;
+    const pct = max > 0 ? (reader.scrollTop / max) * 100 : 0;
+    const prog = document.getElementById('reader-prog');
+    if(prog) prog.style.width=`${Math.min(100, pct)}%`;
   };
 }
 function closeReader(){
@@ -2988,8 +3032,9 @@ async function loadAnalytics(){
   const grid=document.getElementById('analytics-grid'); if(!grid) return;
   grid.innerHTML='<div class="spin" style="grid-column:1/-1"></div>';
   try{
-    const res=await fetch(`${API}/analytics`, { headers:{'Authorization':tok()} });
+    const res=await fetch(apiUrl('/analytics'), { headers:{'Authorization':tok()} });
     if(res.status===401){ toast('Session expired','err'); adminLogout(); return; }
+    if(!res.ok){ grid.innerHTML='<p style="color:var(--ink-2);font-size:12px;grid-column:1/-1">Could not load analytics.</p>'; return; }
     const d=await res.json();
     grid.innerHTML=`
       <div class="ana-card"><div class="ana-num">${d.totalVisits||0}</div><div class="ana-lbl">Total Views</div></div>
@@ -3023,22 +3068,32 @@ function handlePjImg(input){
 }
 
 /* ─── CONTACT FORM ────────────────────────────── */
-document.getElementById('contact-form').addEventListener('submit', async function(e){
+document.getElementById('contact-form')?.addEventListener('submit', async function (e) {
   e.preventDefault();
-  const btn=document.getElementById('form-submit-btn');
-  btn.disabled=true; btn.textContent='Sending…';
-  try{
-    const res=await fetch(this.action, { method:'POST', body:new FormData(this), headers:{'Accept':'application/json'} });
-    if(res.ok){ toast("Sent! I'll reply soon 🚀",'ok'); this.reset(); }
-    else toast('Something went wrong','err');
-  } catch { toast('Network error','err'); }
-  btn.disabled=false; btn.textContent='Send Message →';
+  const btn = document.getElementById('form-submit-btn');
+  if (!btn) return;
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+  try {
+    const res = await fetch(this.action, { method: 'POST', body: new FormData(this), headers: { Accept: 'application/json' } });
+    if (res.ok) {
+      toast("Sent! I'll reply soon 🚀", 'ok');
+      this.reset();
+    } else toast('Something went wrong', 'err');
+  } catch {
+    toast('Network error', 'err');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Send Message →';
+  }
 });
 
 /* ─── HELPER ──────────────────────────────────── */
-function fmtDate(iso){
-  if(!iso) return '';
-  return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+function fmtDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
 /* ─── BOOT ────────────────────────────────────── */
