@@ -108,6 +108,33 @@ function auth(req, res, next) {
   }
 }
 
+// ... existing imports
+
+
+// ... keep other schemas (Project, Skill, etc.) as they were
+
+// --- Update the PUT /info route to whitelist the new fields ---
+app.put("/info", auth, async (req, res) => {
+  try {
+    const allowed = [
+      "name","role","loc","email","phone","bio","aboutDesc",
+      "tag","stp","fv","gh","li","resume","avatar","currently","gigs"
+    ];
+    const update = {};
+    allowed.forEach(k => { if (req.body[k] !== undefined) update[k] = req.body[k]; });
+
+    let info = await Info.findOne();
+    if (!info) { info = await Info.create(update); }
+    else { Object.assign(info, update); await info.save(); }
+
+    res.json({ message: "Info updated ✅", info });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update info" });
+  }
+});
+
+// ... rest of server.js remains exactly the same
+
 
 // ============================================================
 // INPUT VALIDATION HELPER
@@ -157,22 +184,34 @@ const Skill = mongoose.model("Skill", skillSchema);
 
 
 // --- Portfolio Info (always a single document) ---
-// 'resume' is the Google Drive / PDF URL for the "Resume ↗" nav button.
-// The frontend stores it in localStorage after loadInfo() so the button works offline.
 const infoSchema = new mongoose.Schema({
   name:   { type: String, default: "Asad Ali" },
   role:   { type: String, default: "Full Stack Developer · SE Student" },
   loc:    { type: String, default: "Karachi, Pakistan" },
   email:  { type: String, default: "connect.asadali8@gmail.com" },
   phone:  { type: String, default: "03171222948" },
+
   bio:    { type: String, default: "" },
+  aboutDesc: { type: String, default: "" }, // NEW
+
   tag:    { type: String, default: "" },
-  stp:    { type: String, default: "5+" },   // projects count in About stats
-  fv:     { type: String, default: "" },     // Fiverr URL
-  gh:     { type: String, default: "" },     // GitHub URL (also used by sidebar icons)
-  li:     { type: String, default: "" },     // LinkedIn URL
-  resume: { type: String, default: "" },     // PDF/Drive link for the Resume button
-  avatar: { type: String, default: "" },     // base64 profile photo
+  stp:    { type: String, default: "5+" },
+  fv:     { type: String, default: "" },
+  gh:     { type: String, default: "" },
+  li:     { type: String, default: "" },
+  resume: { type: String, default: "" },
+  avatar: { type: String, default: "" },
+
+  currently: {
+    type: [{ type: String, trim: true }],
+    default: []
+  },
+
+  gigs: {
+    type: [{ type: String, trim: true }],
+    default: []
+  }
+
 }, { timestamps: true });
 const Info = mongoose.model("Info", infoSchema);
 
@@ -265,8 +304,12 @@ app.put("/info", auth, [
 ], async (req, res) => {
   if (!validate(req, res)) return;
   try {
-    // 'resume' is in this list — that's what makes the Resume button work
-    const allowed = ["name","role","loc","email","phone","bio","tag","stp","fv","gh","li","resume","avatar"];
+    const allowed = [
+      "name","role","loc","email","phone",
+      "bio","aboutDesc","tag","stp",
+      "fv","gh","li","resume","avatar",
+      "currently","gigs"
+    ];
     const update  = {};
     allowed.forEach(k => { if (req.body[k] !== undefined) update[k] = req.body[k]; });
 

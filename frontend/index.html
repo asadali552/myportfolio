@@ -1542,6 +1542,7 @@ body.admin-logged .footer-edit-btn { display: flex; }
   </div>
 </section>
 
+
 <!-- ═══════════ ABOUT ═══════════ -->
 <section id="about" aria-label="About" itemprop="mainContentOfPage">
 <div class="container">
@@ -1573,24 +1574,46 @@ body.admin-logged .footer-edit-btn { display: flex; }
     </div>
 
     <div class="reveal d2">
+
+      <!-- Detailed About / Journey -->
+      <div style="position:relative;display:inline-block;width:100%;margin-bottom:var(--s4)">
+        <div class="section-label" style="margin-bottom:8px;font-size:9px">My Journey</div>
+        <p class="about-bio" id="about-desc-text" style="font-size:15px; color:var(--ink)">
+          Software Engineering student at FAST-NUCES. I specialize in building high-performance web applications...
+        </p>
+        <button class="edit-btn" onclick="openInlineEditor('about-desc-text','aboutDesc','Detailed Description',6)">✎</button>
+        <div class="inline-editor" id="ie-about-desc-text"></div>
+      </div>
+
+      <!-- Short Bio -->
       <div style="position:relative;display:inline-block;width:100%">
-        <p class="about-bio" id="abio" itemprop="description">Software Engineering student at NUCES–FAST. I treat every project like it's for a real client — clean architecture, great UX, fast delivery. Not just a student building assignments — someone actually shipping products on the internet.</p>
-        <button class="edit-btn" onclick="openInlineEditor('abio','bio','Bio',5)" title="Edit bio">✎</button>
-        <div class="inline-editor" id="ie-abio"></div>
+        <p class="about-bio" id="abio-main" itemprop="description">
+          Software Engineering student at NUCES–FAST. I treat every project like it's for a real client — clean architecture, great UX, fast delivery.
+        </p>
+        <button class="edit-btn" onclick="openInlineEditor('abio-main','bio','Short Bio',4)">✎</button>
+        <div class="inline-editor" id="ie-abio-main"></div>
       </div>
 
-      <div class="currently-block">
+      <!-- Currently (dynamic) -->
+      <div class="currently-block" id="currently-container">
         <div class="currently-label">Currently</div>
-        <div class="currently-item">Building full-stack portfolio with Node.js, MongoDB &amp; Vercel</div>
-        <div class="currently-item">Exploring AI integration — LangChain, OpenAI APIs</div>
-        <div class="currently-item">Learning OOP in C++ &amp; studying Data Structures</div>
+        <div id="currently-list"></div>
+        <div class="scc-add-row" style="margin-top:10px; border-top:none; padding-top:0">
+          <input class="scc-add-input" id="new-currently" type="text" placeholder="Add activity...">
+          <button class="scc-add-btn-inline" onclick="addItem('currently','new-currently')">+ Add</button>
+        </div>
       </div>
 
-      <div class="about-stats" aria-label="Stats">
-        <div class="stat-item"><div class="stat-num">2nd</div><div class="stat-label">Semester</div></div>
-        <div class="stat-item"><div class="stat-num" id="stp">5+</div><div class="stat-label">Projects</div></div>
-        <div class="stat-item"><div class="stat-num">100%</div><div class="stat-label">Dedication</div></div>
+      <!-- Fiverr / Services -->
+      <div class="currently-block" style="border-left-color:#1dbf73;background:rgba(29,191,115,0.05); margin-bottom: 0;" id="gigs-container">
+        <div class="currently-label" style="color:#1dbf73">Services / Gigs</div>
+        <div id="gigs-list"></div>
+        <div class="scc-add-row" style="margin-top:10px; border-top:none; padding-top:0">
+          <input class="scc-add-input" id="new-gig" type="text" placeholder="Add a service...">
+          <button class="scc-add-btn-inline" style="background:#1dbf73" onclick="addItem('gigs','new-gig')">+ Add</button>
+        </div>
       </div>
+
     </div>
   </div>
 </div>
@@ -2314,6 +2337,94 @@ async function loadAdminData(){
     sv('s-fv',info.fv); sv('s-gh',info.gh); sv('s-li',info.li); sv('s-resume',info.resume||'');
     if(info.avatar){ const p=document.getElementById('av-prev'); if(p){ p.src=info.avatar; p.style.display='block'; } }
   } catch {}
+}
+
+//new change
+
+let localInfo = {}; // Global reference to current info
+
+async function loadInfo() {
+  try {
+    const info = await fetch(`${API}/info`).then(r => r.ok ? r.json() : null);
+    if (info) {
+      localInfo = info;
+      renderInfo(info);
+    }
+  } catch {}
+}
+
+function renderInfo(info) {
+  // ... existing logic for name, role, email, etc. ...
+  
+  // New: Render detailed About Description
+  const adesc = document.getElementById('about-desc-text');
+  if(adesc && info.aboutDesc) adesc.innerHTML = info.aboutDesc;
+
+  // New: Render Currently List
+  const cList = document.getElementById('currently-list');
+  if(cList) {
+    const items = info.currently || [];
+    cList.innerHTML = items.map((item, i) => `
+      <div class="currently-item">
+        ${item}
+        <button class="scc-pill-x" style="margin-left:auto; display:var(--admin-display, none)" onclick="removeItem('currently', ${i})">✕</button>
+      </div>
+    `).join('');
+  }
+
+  // New: Render Gigs List
+  const gList = document.getElementById('gigs-list');
+  if(gList) {
+    const items = info.gigs || [];
+    gList.innerHTML = items.map((item, i) => `
+      <div class="currently-item">
+        ${item}
+        <button class="scc-pill-x" style="margin-left:auto; display:var(--admin-display, none)" onclick="removeItem('gigs', ${i})">✕</button>
+      </div>
+    `).join('');
+  }
+}
+
+// Logic to add item to arrays
+async function addItem(key, inputId) {
+  if(!tok()) return toast('Login first', 'err');
+  const val = document.getElementById(inputId).value.trim();
+  if(!val) return;
+
+  const newList = [...(localInfo[key] || []), val];
+  await updateInfoArray(key, newList);
+  document.getElementById(inputId).value = '';
+}
+
+// Logic to remove item from arrays
+async function removeItem(key, index) {
+  if(!tok()) return;
+  const newList = [...localInfo[key]];
+  newList.splice(index, 1);
+  await updateInfoArray(key, newList);
+}
+
+async function updateInfoArray(key, list) {
+  try {
+    const res = await fetch(`${API}/info`, {
+      method: 'PUT',
+      headers: authH(),
+      body: JSON.stringify({ [key]: list })
+    });
+    const data = await res.json();
+    localInfo = data.info;
+    renderInfo(localInfo);
+    toast('Updated ✅');
+  } catch {
+    toast('Update failed', 'err');
+  }
+}
+
+// Modify setAdminState to handle the new buttons
+function setAdminState(loggedIn) {
+  document.body.classList.toggle('admin-logged', loggedIn);
+  // Custom CSS variable to show/hide array delete buttons
+  document.documentElement.style.setProperty('--admin-display', loggedIn ? 'inline' : 'none');
 }
 
 /* ─── INFO ────────────────────────────────────── */
