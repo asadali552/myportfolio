@@ -331,7 +331,7 @@ body.admin-logged .edit-btn { display: flex; }
   position: absolute;
   top: 110%;
   left: 0;
-  z-index: 400;
+  z-index: 9999;
   background: var(--bg-2);
   border: 1px solid var(--border-2);
   border-radius: var(--r-md);
@@ -339,6 +339,7 @@ body.admin-logged .edit-btn { display: flex; }
   box-shadow: 0 16px 48px rgba(0,0,0,0.5);
   min-width: 320px;
   animation: popIn 0.2s var(--spring) forwards;
+  position: absolute;
 }
 @keyframes popIn {
   from { opacity: 0; transform: translateY(8px) scale(0.97); }
@@ -1511,7 +1512,7 @@ body.admin-logged .footer-edit-btn { display: flex; }
       <span class="h1-line-3">work.</span>
     </h1>
 
-    <div style="position:relative;display:inline-block">
+    <div style="position:relative;display:inline-block;z-index:10">
       <p class="hero-desc" id="hero-tag" itemprop="description">
         Full stack developer at NUCES-FAST — I don't just write code, I solve problems.
         <strong>Sub-2s load times. Mobile-first. Actually accessible.</strong>
@@ -1526,7 +1527,7 @@ body.admin-logged .footer-edit-btn { display: flex; }
       <a class="btn-outline" href="#contact">Let's Talk</a>
     </div>
 
-    <div style="position:relative;display:inline-block">
+    <div style="position:relative;display:inline-block;z-index:10">
       <div class="hero-status" aria-live="polite">
         <div class="status-led" aria-hidden="true"></div>
         <span class="status-text" id="hero-status-text"><em>Now:</em> Building AI-powered apps · 2nd Sem @ FAST</span>
