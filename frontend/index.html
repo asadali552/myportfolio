@@ -339,7 +339,6 @@ body.admin-logged .edit-btn { display: flex; }
   box-shadow: 0 16px 48px rgba(0,0,0,0.5);
   min-width: 320px;
   animation: popIn 0.2s var(--spring) forwards;
-  position: absolute;
 }
 @keyframes popIn {
   from { opacity: 0; transform: translateY(8px) scale(0.97); }
@@ -447,7 +446,7 @@ body.admin-logged .edit-btn { display: flex; }
   align-items: center;
   padding: 100px var(--s8) var(--s10);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .hero-orb-1 {
@@ -490,6 +489,7 @@ body.admin-logged .edit-btn { display: flex; }
   position: relative;
   z-index: 1;
   max-width: 900px;
+  z-index: 5;
 }
 
 .hero-eyebrow {
@@ -1533,7 +1533,7 @@ body.admin-logged .footer-edit-btn { display: flex; }
         <span class="status-text" id="hero-status-text"><em>Now:</em> Building AI-powered apps · 2nd Sem @ FAST</span>
       </div>
       <button class="edit-btn" style="top:-6px;right:-28px" onclick="openInlineEditor('hero-status-text','status','Status Text',1)" title="Edit status">✎</button>
-      <div class="inline-editor" id="ie-hero-status"></div>
+      <div class="inline-editor" id="ie-hero-status" style="top:0; left:110%;"></div>
     </div>
   </div>
 
@@ -1588,7 +1588,7 @@ body.admin-logged .footer-edit-btn { display: flex; }
       <!-- Short Bio -->
       <div style="position:relative;display:inline-block;width:100%">
         <p class="about-bio" id="abio-main" itemprop="description">
-          Software Engineering student at NUCES–FAST. I treat every project like it's for a real client — clean architecture, great UX, fast delivery.
+          I build real-world projects focused on performance, usability, and solving actual problems.
         </p>
         <button class="edit-btn" onclick="openInlineEditor('abio-main','bio','Short Bio',4)">✎</button>
         <div class="inline-editor" id="ie-abio-main"></div>
