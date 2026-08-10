@@ -10,29 +10,29 @@
 <meta name="author" content="Asad Jamali">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <meta name="theme-color" content="#080810">
-<link rel="canonical" href="https://devworkbyasad.vercel.app/">
+<link rel="canonical" href="https://asadali-dev.vercel.app/">
 
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://devworkbyasad.vercel.app/">
+<meta property="og:url" content="https://asadali-dev.vercel.app/">
 <meta property="og:title" content="Asad Jamali — Full Stack Developer | Karachi">
 <meta property="og:description" content="Full Stack Developer & SE Student at NUCES-FAST. Building fast, intelligent, purposeful web experiences. Based in Karachi, Pakistan.">
-<meta property="og:image" content="https://devworkbyasad.vercel.app/og-image.png">
+<meta property="og:image" content="https://asadali-dev.vercel.app/og-image.png">
 <meta property="og:site_name" content="Asad Jamali — Portfolio">
 <meta property="og:locale" content="en_US">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Asad Jamali — Full Stack Developer">
 <meta name="twitter:description" content="Full Stack Developer & SE Student at NUCES-FAST Karachi. Building fast, intelligent web experiences.">
-<meta name="twitter:image" content="https://devworkbyasad.vercel.app/og-image.png">
+<meta name="twitter:image" content="https://asadali-dev.vercel.app/og-image.png">
 
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Person",
   "name": "Asad Jamali",
-  "url": "https://devworkbyasad.vercel.app",
-  "image": "https://devworkbyasad.vercel.app/avatar.jpg",
-  "sameAs": ["https://github.com/asadali", "https://linkedin.com/in/asadali"],
+  "url": "https://asadali-dev.vercel.app",
+  "image": "https://asadali-dev.vercel.app/avatar.jpg",
+  "sameAs": ["https://github.com/asadali552"],
   "jobTitle": "Full Stack Developer",
   "worksFor": { "@type": "Organization", "name": "NUCES-FAST" },
   "alumniOf": {
@@ -55,7 +55,7 @@
    RESET & BASE
 ═══════════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;font-size:16px;-webkit-text-size-adjust:100%}
+html{scroll-behavior:smooth;font-size:16px;-webkit-text-size-adjust:100%;overflow-x:hidden}
 img{max-width:100%;display:block}
 a{text-decoration:none;color:inherit}
 button{font-family:inherit;cursor:pointer;border:none;background:none}
@@ -441,6 +441,7 @@ body.admin-logged .edit-btn { display: flex; }
    HERO
 ═══════════════════════════════════════════ */
 #hero {
+  overflow: hidden;
   min-height: 100vh;
   display: grid;
   align-items: center;
@@ -1411,6 +1412,15 @@ body.admin-logged .footer-edit-btn { display: flex; }
 .d3 { transition-delay: 0.19s; }
 .d4 { transition-delay: 0.26s; }
 
+:focus-visible { outline: 2px solid var(--accent-hi); outline-offset: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .reveal { opacity: 1; transform: none; }
+  .cursor-dot, .cursor-ring { display: none; }
+}
+
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(24px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -1514,9 +1524,9 @@ body.admin-logged .footer-edit-btn { display: flex; }
 
     <div style="position:relative;display:inline-block;z-index:10">
       <p class="hero-desc" id="hero-tag" itemprop="description">
-        Full stack developer at NUCES-FAST — I don't just write code, I solve problems.
-        <strong>Sub-2s load times. Mobile-first. Actually accessible.</strong>
-        Currently wiring AI into real products.
+        Software engineering student at NUCES-FAST building practical full-stack products.
+        <strong>Performance-minded. Mobile-first. Accessibility-aware.</strong>
+        Currently exploring useful AI integrations.
       </p>
       <button class="edit-btn" onclick="openInlineEditor('hero-tag','tag','Hero Tagline',3)" title="Edit tagline">✎</button>
       <div class="inline-editor" id="ie-hero-tag"></div>
@@ -1738,7 +1748,7 @@ body.admin-logged .footer-edit-btn { display: flex; }
   <div class="articles-list reveal d1" id="articles-list" role="list" aria-label="Articles">
     <div style="padding:56px 24px;text-align:center;color:var(--ink-2);font-size:12px">
       <div style="font-size:28px;margin-bottom:8px" aria-hidden="true">✍️</div>
-      <p>No articles yet. Add your first one from the admin panel.</p>
+      <p>Writing is in progress. In the meantime, explore the project case studies above.</p>
     </div>
   </div>
 </div>
@@ -2016,7 +2026,9 @@ body.admin-logged .footer-edit-btn { display: flex; }
 'use strict';
 
 /* ─── CONFIG ──────────────────────────────────── */
-const API = 'https://devworkbyasad.vercel.app';
+const API = window.location.hostname === 'localhost'
+  ? 'http://localhost:3000'
+  : 'https://asadali-dev.vercel.app';
 
 /** @param {string} path Absolute path beginning with / (e.g. "/info") */
 function apiUrl(path) {
@@ -2034,6 +2046,7 @@ function escapeHtml(value) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 }
+const projectLinkLabel = (url) => String(url || '').includes('github.com') ? 'View Code →' : 'View Live →';
 
 /* ─── THEME ───────────────────────────────────── */
 (function(){
@@ -2139,7 +2152,7 @@ window.addEventListener('load', () => {
 const v  = id => document.getElementById(id)?.value?.trim()||'';
 const sv = (id,val) => { const el=document.getElementById(id); if(el) el.value=val||''; };
 const tok = () => localStorage.getItem('token');
-const authH = () => ({ 'Content-Type':'application/json', 'Authorization':tok() });
+const authH = () => ({ 'Content-Type':'application/json', 'Authorization':`Bearer ${tok()}` });
 
 /* ─── TOAST ───────────────────────────────────── */
 let toastTimerId = 0;
@@ -2705,7 +2718,7 @@ async function inlineRemoveSkill(skillId){
   if(!tok()) return;
   if(!confirm('Remove this skill?')) return;
   try{
-    await fetch(apiUrl(`/skills/${skillId}`), { method:'DELETE', headers:{'Authorization':tok()} });
+    await fetch(apiUrl(`/skills/${skillId}`), { method:'DELETE', headers:authH() });
     await refreshSkills();
     toast('Skill removed');
   } catch { toast('Failed','err'); }
@@ -2828,7 +2841,7 @@ async function addSkillToCat(catId){
 async function removeSkillFromCat(skillId, catId){
   if(!tok()) return;
   try{
-    await fetch(apiUrl(`/skills/${skillId}`), { method:'DELETE', headers:{'Authorization':tok()} });
+    await fetch(apiUrl(`/skills/${skillId}`), { method:'DELETE', headers:authH() });
     await refreshSkills();
     toast('Removed');
   } catch { toast('Failed','err'); }
@@ -2861,9 +2874,16 @@ function deleteCategory(catId){
 /* ─── PROJECTS ────────────────────────────────── */
 async function loadProjects(){
   try{
-    const projects=await fetch(apiUrl('/projects')).then((r) => (r.ok ? r.json() : []));
+    let projects=await fetch(apiUrl('/projects')).then((r) => (r.ok ? r.json() : []));
+    if (!projects.length) {
+      const local = await fetch('./data.json').then((r) => (r.ok ? r.json() : null)).catch(() => null);
+      projects = local?.projects || [];
+    }
     renderProjects(projects); renderProjectsAdmin(projects);
-  } catch { renderProjects([]); }
+  } catch {
+    const local = await fetch('./data.json').then((r) => (r.ok ? r.json() : null)).catch(() => null);
+    renderProjects(local?.projects || []);
+  }
 }
 function renderProjects(projects){
   const fw=document.getElementById('featured-wrap');
@@ -2880,7 +2900,7 @@ function renderProjects(projects){
       <article class="featured-project reveal" itemscope itemtype="https://schema.org/CreativeWork">
         <div class="featured-img">
           ${feat.img?`<img src="${feat.img}" alt="${escapeHtml(feat.t)} — project screenshot by Asad Ali" loading="lazy" itemprop="image">`:'🖼️'}
-          ${feat.u?`<div class="featured-img-overlay"><a class="overlay-btn" href="${feat.u}" target="_blank" rel="noopener noreferrer">View Live →</a></div>`:''}
+          ${feat.u?`<div class="featured-img-overlay"><a class="overlay-btn" href="${feat.u}" target="_blank" rel="noopener noreferrer">${projectLinkLabel(feat.u)}</a></div>`:''}
         </div>
         <div class="featured-body">
           <div class="featured-eyebrow">Featured · ${escapeHtml(feat.c||'Web Dev')}</div>
@@ -2891,7 +2911,7 @@ function renderProjects(projects){
             ${feat.result?`<div class="case-row"><span class="case-key">Result</span>${escapeHtml(feat.result)}</div>`:''}
           </div>
           <div class="stack-tags">${(feat.s||[]).map(x=>`<span class="tag">${escapeHtml(x)}</span>`).join('')}</div>
-          ${feat.u?`<a class="project-link" href="${feat.u}" target="_blank" rel="noopener noreferrer" itemprop="url">View Live →</a>`:''}
+          ${feat.u?`<a class="project-link" href="${feat.u}" target="_blank" rel="noopener noreferrer" itemprop="url">${projectLinkLabel(feat.u)}</a>`:''}
         </div>
       </article>`;
     document.querySelectorAll('.reveal:not(.vis)').forEach(el=>revObs.observe(el));
@@ -2901,14 +2921,14 @@ function renderProjects(projects){
     <article class="project-card" role="listitem" itemscope itemtype="https://schema.org/CreativeWork">
       <div class="project-thumb">
         ${p.img?`<img src="${p.img}" alt="${escapeHtml(p.t)} project by Asad Ali" loading="lazy" itemprop="image">`:'🖼️'}
-        ${p.u?`<div class="project-overlay"><a class="overlay-btn" href="${p.u}" target="_blank" rel="noopener noreferrer">View Live →</a></div>`:''}
+        ${p.u?`<div class="project-overlay"><a class="overlay-btn" href="${p.u}" target="_blank" rel="noopener noreferrer">${projectLinkLabel(p.u)}</a></div>`:''}
       </div>
       <div class="project-body">
         <span class="project-cat">${escapeHtml(p.c||'Project')}</span>
         <div class="project-title" itemprop="name">${escapeHtml(p.t)}</div>
         <div class="project-desc" itemprop="description">${escapeHtml(p.d||'')}</div>
         <div class="stack-tags">${(p.s||[]).map(x=>`<span class="tag">${escapeHtml(x)}</span>`).join('')}</div>
-        ${p.u?`<a class="project-link" href="${p.u}" target="_blank" rel="noopener noreferrer" itemprop="url" style="margin-top:6px;display:inline-flex;">View Live →</a>`:''}
+        ${p.u?`<a class="project-link" href="${p.u}" target="_blank" rel="noopener noreferrer" itemprop="url" style="margin-top:6px;display:inline-flex;">${projectLinkLabel(p.u)}</a>`:''}
       </div>
     </article>`).join('');
 }
@@ -2933,7 +2953,7 @@ async function addProject(){
 }
 async function removeProject(id){
   if(!tok()||!confirm('Remove this project?')) return;
-  try{ await fetch(apiUrl(`/projects/${id}`), { method:'DELETE', headers:{'Authorization':tok()} }); await loadProjects(); toast('Removed'); }
+  try{ await fetch(apiUrl(`/projects/${id}`), { method:'DELETE', headers:authH() }); await loadProjects(); toast('Removed'); }
   catch { toast('Failed','err'); }
 }
 
@@ -2952,9 +2972,13 @@ window.loadArticles = loadArticles;
 function renderArticles(articles){
   const box=document.getElementById('articles-list'); if(!box) return;
   if(!articles.length){
-    box.innerHTML='<div style="padding:56px 24px;text-align:center;color:var(--ink-2);font-size:12px"><div style="font-size:28px;margin-bottom:8px">✍️</div><p>No articles yet.</p></div>';
+    document.getElementById('articles')?.setAttribute('hidden', '');
+    document.querySelectorAll('a[href="#articles"]').forEach((link) => link.setAttribute('hidden', ''));
+    box.innerHTML='<div style="padding:56px 24px;text-align:center;color:var(--ink-2);font-size:12px"><p>Writing is in progress.</p></div>';
     return;
   }
+  document.getElementById('articles')?.removeAttribute('hidden');
+  document.querySelectorAll('a[href="#articles"]').forEach((link) => link.removeAttribute('hidden'));
   box.innerHTML=articles.map(a=>`
     <article class="article-item" onclick="openReader('${a._id}')" role="listitem" tabindex="0"
       aria-label="${escapeHtml(a.t)}" onkeydown="if(event.key==='Enter')openReader('${a._id}')"
@@ -2992,7 +3016,7 @@ async function addArticle(){
 }
 async function removeArticle(id){
   if(!tok()||!confirm('Delete this article?')) return;
-  try{ await fetch(apiUrl(`/articles/${id}`), { method:'DELETE', headers:{'Authorization':tok()} }); await loadArticles(); toast('Deleted'); }
+  try{ await fetch(apiUrl(`/articles/${id}`), { method:'DELETE', headers:authH() }); await loadArticles(); toast('Deleted'); }
   catch { toast('Failed','err'); }
 }
 
@@ -3057,7 +3081,7 @@ async function loadAnalytics(){
   const grid=document.getElementById('analytics-grid'); if(!grid) return;
   grid.innerHTML='<div class="spin" style="grid-column:1/-1"></div>';
   try{
-    const res=await fetch(apiUrl('/analytics'), { headers:{'Authorization':tok()} });
+    const res=await fetch(apiUrl('/analytics'), { headers:authH() });
     if(res.status===401){ toast('Session expired','err'); adminLogout(); return; }
     if(!res.ok){ grid.innerHTML='<p style="color:var(--ink-2);font-size:12px;grid-column:1/-1">Could not load analytics.</p>'; return; }
     const d=await res.json();
