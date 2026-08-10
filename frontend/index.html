@@ -2381,7 +2381,7 @@ async function loginAdmin(){
   if(!btn) return;
   btn.textContent='Checking…'; btn.disabled=true;
   try{
-    const res = await fetch(apiUrl('/login'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'admin@asad.com', password: pw }) });
+    const res = await fetch(apiUrl('/login'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'connect.asadali8@gmail.com', password: pw }) });
     let data;
     try { data = await res.json(); }
     catch {
