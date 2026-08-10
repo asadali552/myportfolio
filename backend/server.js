@@ -488,7 +488,5 @@ app.put("/articles/:id", auth, async (req, res) => {
 // START SERVER
 // PORT from environment so Vercel/Render injects their own
 // ============================================================
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server on port ${PORT} 🚀`));
 
 module.exports = app;
