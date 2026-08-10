@@ -102,7 +102,7 @@ mongoose
 // Password is hashed at startup so plain text never sits in memory.
 // ============================================================
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "connect.asadali8@gmail.com";
-const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD
   || bcrypt.hashSync(process.env.ADMIN_PASSWORD || "local-development-only", 12);
 const JWT_SECRET = process.env.JWT_SECRET || "local-development-secret-change-me";
 
