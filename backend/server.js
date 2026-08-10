@@ -11,6 +11,13 @@ const { body, validationResult } = require("express-validator");
 
 const app = express();
 
+const requiredEnv = ["MONGO_URI", "ADMIN_EMAIL", "JWT_SECRET"];
+const missingEnv = requiredEnv.filter((key) => !process.env[key]);
+if (!process.env.ADMIN_PASSWORD_HASH && !process.env.ADMIN_PASSWORD) missingEnv.push("ADMIN_PASSWORD_HASH");
+if (process.env.NODE_ENV === "production" && missingEnv.length) {
+  throw new Error(`Missing required environment variables: ${missingEnv.join(", ")}`);
+}
+
 
 // ============================================================
 // SECURITY MIDDLEWARE
@@ -30,8 +37,18 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false, // needed so Google Fonts loads correctly
 }));
 
-// Allow requests from any origin — frontend and backend are on different Vercel URLs
-app.use(cors({ origin: "*" }));
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "http://localhost:3000,http://localhost:5500")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error("Origin not allowed by CORS"));
+  },
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
 
 // 10mb body limit so base64-encoded images fit in the request payload.
 // Once you add Cloudinary later, you can drop this back to 1mb.
@@ -84,57 +101,29 @@ mongoose
 // Single admin — no registration needed for a personal portfolio.
 // Password is hashed at startup so plain text never sits in memory.
 // ============================================================
-const ADMIN_EMAIL         = process.env.ADMIN_EMAIL    || "admin@asad.com";
-const ADMIN_PASSWORD_HASH = bcrypt.hashSync(
-  process.env.ADMIN_PASSWORD || "Asad@2k04",
-  10  // 10 salt rounds — right balance between security and speed
-);
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@localhost";
+const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD_HASH
+  || bcrypt.hashSync(process.env.ADMIN_PASSWORD || "local-development-only", 12);
+const JWT_SECRET = process.env.JWT_SECRET || "local-development-secret-change-me";
 
 
 // ============================================================
 // AUTH MIDDLEWARE
 // Protects any route that modifies data.
-// Expects a raw JWT in the Authorization header (not "Bearer token", just the token).
+// Expects the standard `Authorization: Bearer <token>` header.
 // ============================================================
 function auth(req, res, next) {
-  const token = req.headers.authorization;
+  const [scheme, token] = (req.headers.authorization || "").split(" ");
+  if (scheme !== "Bearer") return res.status(401).json({ error: "Authentication required" });
   if (!token) return res.status(401).json({ error: "Authentication required" });
   try {
-    req.user = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = jwt.verify(token, JWT_SECRET);
     next();
   } catch {
     // Token expired or tampered — tell the frontend to re-login
     return res.status(401).json({ error: "Token invalid or expired. Please login again." });
   }
 }
-
-// ... existing imports
-
-
-// ... keep other schemas (Project, Skill, etc.) as they were
-
-// --- Update the PUT /info route to whitelist the new fields ---
-app.put("/info", auth, async (req, res) => {
-  try {
-    const allowed = [
-      "name","role","loc","email","phone","bio","aboutDesc",
-      "tag","stp","fv","gh","li","resume","avatar","currently","gigs"
-    ];
-    const update = {};
-    allowed.forEach(k => { if (req.body[k] !== undefined) update[k] = req.body[k]; });
-
-    let info = await Info.findOne();
-    if (!info) { info = await Info.create(update); }
-    else { Object.assign(info, update); await info.save(); }
-
-    res.json({ message: "Info updated ✅", info });
-  } catch (err) {
-    res.status(500).json({ error: "Failed to update info" });
-  }
-});
-
-// ... rest of server.js remains exactly the same
-
 
 // ============================================================
 // INPUT VALIDATION HELPER
@@ -278,7 +267,7 @@ app.post("/login", loginLimiter, [
   const isMatch = await bcrypt.compare(password, ADMIN_PASSWORD_HASH);
   if (!isMatch) return res.status(401).json({ error: "Invalid credentials" });
 
-  const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "1d" });
+  const token = jwt.sign({ email, role: "admin" }, JWT_SECRET, { expiresIn: "2h" });
   res.json({ token });
 });
 
