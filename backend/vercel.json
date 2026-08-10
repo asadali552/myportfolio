@@ -1,25 +1,21 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "server.js",
-      "use": "@vercel/node"
-    }
+    { "src": "backend/server.js", "use": "@vercel/node" },
+    { "src": "frontend/**", "use": "@vercel/static" }
   ],
   "routes": [
     {
-      "src": "/(.*)",
-      "dest": "server.js"
-    }
-  ],
-  "headers": [
+      "src": "/(login|info|skills|projects|articles|analytics|messages)(/.*)?",
+      "dest": "backend/server.js"
+    },
     {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET,POST,PUT,DELETE,OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" }
-      ]
+      "src": "/api/(.*)",
+      "dest": "backend/server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "frontend/index.html"
     }
   ]
 }
