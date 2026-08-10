@@ -119,11 +119,54 @@ app.use(apiLimiter);
 // DATABASE
 // ============================================================
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB Connected ✅"))
-  .catch(err => {
+mongoose.set("bufferCommands", false);
+
+let databaseConnectionPromise = null;
+
+async function connectDatabase() {
+  if (mongoose.connection.readyState === 1) return mongoose.connection;
+
+  if (!process.env.MONGO_URI) {
+    throw new Error("MONGO_URI is not configured");
+  }
+
+  if (!databaseConnectionPromise) {
+    databaseConnectionPromise = mongoose
+      .connect(process.env.MONGO_URI, {
+        serverSelectionTimeoutMS: 8000,
+        connectTimeoutMS: 8000
+      })
+      .then(() => {
+        console.log("MongoDB Connected ✅");
+        return mongoose.connection;
+      })
+      .catch((err) => {
+        databaseConnectionPromise = null;
+        throw err;
+      });
+  }
+
+  return databaseConnectionPromise;
+}
+
+// Vercel can execute a route before a top-level asynchronous connection has
+// finished. Await one cached connection before every database-backed request
+// so Mongoose never hides connection failures behind a buffering timeout.
+app.use(async (req, res, next) => {
+  if (req.method === "OPTIONS" || req.path === "/" || req.path === "/login") {
+    return next();
+  }
+
+  try {
+    await connectDatabase();
+    return next();
+  } catch (err) {
     console.error("MongoDB connection failed:", err.message);
-  });
+    return res.status(503).json({
+      error: "Database temporarily unavailable"
+    });
+  }
+});
 // ============================================================
 // ADMIN CREDENTIALS
 // ============================================================
