@@ -5,6 +5,10 @@
     { "src": "frontend/**", "use": "@vercel/static" }
   ],
   "routes": [
+    {
+      "src": "/(login|info|skills|projects|articles|analytics|messages)(/.*)?",
+      "dest": "backend/server.js"
+    },
     { "src": "/api/(.*)", "dest": "backend/server.js" },
     { "src": "/(.*)", "dest": "frontend/index.html" }
   ]
