@@ -149,6 +149,23 @@ async function connectDatabase() {
   return databaseConnectionPromise;
 }
 
+function databaseErrorCode(err) {
+  const message = String(err?.message || "").toLowerCase();
+  if (message.includes("authentication failed") || message.includes("bad auth")) {
+    return "AUTHENTICATION_FAILED";
+  }
+  if (message.includes("querysrv") || message.includes("enotfound")) {
+    return "DNS_LOOKUP_FAILED";
+  }
+  if (message.includes("ip") || message.includes("whitelist")) {
+    return "NETWORK_ACCESS_DENIED";
+  }
+  if (message.includes("server selection") || message.includes("timed out")) {
+    return "CONNECTION_TIMEOUT";
+  }
+  return "CONNECTION_FAILED";
+}
+
 // Vercel can execute a route before a top-level asynchronous connection has
 // finished. Await one cached connection before every database-backed request
 // so Mongoose never hides connection failures behind a buffering timeout.
@@ -163,7 +180,8 @@ app.use(async (req, res, next) => {
   } catch (err) {
     console.error("MongoDB connection failed:", err.message);
     return res.status(503).json({
-      error: "Database temporarily unavailable"
+      error: "Database temporarily unavailable",
+      code: databaseErrorCode(err)
     });
   }
 });
