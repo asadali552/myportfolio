@@ -52,20 +52,36 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
   .map((origin) => origin.trim())
   .filter(Boolean);
 
+// Keep the production frontend available even when a Vercel environment
+// variable is accidentally missing from a new deployment. Extra origins can
+// still be supplied as a comma-separated ALLOWED_ORIGINS value.
+const productionOrigins = new Set([
+  "https://asadali-dev.vercel.app",
+  ...allowedOrigins
+]);
+
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin || productionOrigins.has(origin)) {
         return callback(null, true);
       }
 
-      return callback(new Error("Origin not allowed by CORS"));
+      return callback(null, false);
     },
 
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
+
+app.use((err, req, res, next) => {
+  if (err) {
+    console.error("Request middleware error:", err.message);
+    return res.status(400).json({ error: "Invalid request" });
+  }
+  return next();
+});
 
 // ============================================================
 // BODY PARSER
