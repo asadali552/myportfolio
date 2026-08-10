@@ -1,0 +1,9 @@
+{
+  "name": "Asad Ali — Full Stack Developer",
+  "short_name": "Asad Ali",
+  "description": "Official portfolio of Asad Ali, full stack developer and software engineering student in Karachi.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#05060a",
+  "theme_color": "#05060a"
+}

@@ -10,6 +10,10 @@
       "dest": "backend/server.js"
     },
     { "src": "/api/(.*)", "dest": "backend/server.js" },
+    { "src": "/robots.txt", "dest": "frontend/robots.txt" },
+    { "src": "/sitemap.xml", "dest": "frontend/sitemap.xml" },
+    { "src": "/site.webmanifest", "dest": "frontend/site.webmanifest" },
+    { "src": "/og-image.png", "dest": "frontend/og-image.png" },
     { "src": "/(.*)", "dest": "frontend/index.html" }
   ]
 }
