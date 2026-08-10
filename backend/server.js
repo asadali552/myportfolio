@@ -42,10 +42,10 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS || "http://localhost:3000,ht
   .map((origin) => origin.trim())
   .filter(Boolean);
 app.use(cors({
-  origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
-    return callback(new Error("Origin not allowed by CORS"));
-  },
+  origin: "https://asadali-dev.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
