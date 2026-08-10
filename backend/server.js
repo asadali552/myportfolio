@@ -22,16 +22,14 @@ const requiredEnv = [
   "ALLOWED_ORIGINS"
 ];
 
-const missingEnv = requiredEnv.filter((key) => !process.env[key]);
+const missingEnv = requiredEnv.filter(key => !process.env[key]);
 
 if (!process.env.ADMIN_PASSWORD && !process.env.ADMIN_PASSWORD_HASH) {
   missingEnv.push("ADMIN_PASSWORD or ADMIN_PASSWORD_HASH");
 }
 
-if (process.env.NODE_ENV === "production" && missingEnv.length) {
-  throw new Error(
-    `Missing required environment variables: ${missingEnv.join(", ")}`
-  );
+if (missingEnv.length) {
+  console.error("Missing environment variables:", missingEnv);
 }
 
 // ============================================================
@@ -69,8 +67,6 @@ app.use(
   })
 );
 
-app.options("/*splat", cors());
-
 // ============================================================
 // BODY PARSER
 // ============================================================
@@ -107,13 +103,11 @@ app.use(apiLimiter);
 // DATABASE
 // ============================================================
 
-mongoose
-  .connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected ✅"))
-  .catch((err) => {
-    console.error("MongoDB connection failed:", err);
+  .catch(err => {
+    console.error("MongoDB connection failed:", err.message);
   });
-
 // ============================================================
 // ADMIN CREDENTIALS
 // ============================================================
