@@ -1,27 +1,115 @@
 {
   "info": {
+    "_id": "69caf6782e4fa64eb33d5e9d",
     "name": "Asad Ali",
-    "role": "Software Engineering Student",
-    "loc": "Karachi, Pakistan",
+    "role": "Web Developer \u00b7 SE Student",
+    "loc": "Multan/Karachi, Pakistan",
     "email": "connect.asadali8@gmail.com",
     "phone": "03171222948",
-    "tag": "Building modern web experiences @ FAST-NUCES",
-    "bio": "I am a 2nd-semester SE student focused on C++, Web Dev, and UI/UX.",
-    "stp": "5+"
+    "bio": "---",
+    "tag": "Complex problems. Clean solutions.",
+    "stp": "2+",
+    "fv": "",
+    "gh": "https://github.com/asadali552",
+    "li": "https://www.linkedin.com/in/asad-ali-733481353/",
+    "createdAt": "2026-03-30T22:17:28.680Z",
+    "updatedAt": "2026-08-11T04:17:16.878Z",
+    "__v": 7,
+    "resume": "https://drive.google.com/file/d/1iqsMDZV2A3rcBo5mFoz74ppHMHgv-wNP/view?usp=drivesdk",
+    "aboutDesc": "I\u2019m a Software Engineering student at FAST-NUCES, actively turning concepts into real-world projects.\nFrom writing my first programs to building full web applications, I focus on solving practical problems through code.\nCurrently, I\u2019m improving my backend skills and learning how to create systems that help businesses operate more efficiently.",
+    "currently": [
+      "Learning AI Integration",
+      "Strengthening Problem Solving skills"
+    ],
+    "gigs": [
+      "I build conversion-focused business websites that help you get more clients",
+      "I create online stores with product listings, cart, and order system.",
+      "I can automate your business",
+      "I can manage your website"
+    ],
+    "avatar": "./assets/asad.png"
   },
-  "skills": [
-    { "e": "💻", "n": "C++", "l": "Intermediate", "p": 80 },
-    { "e": "🎨", "n": "UI/UX", "l": "Learning", "p": 60 },
-    {"e": "🌐","n": "Web Development","l": "Intermediate","p": 85}
-  ],
   "projects": [
     {
-  "t": "2D Runner Game",
-  "c": "Game Development",
-  "d": "A classic 2D runner game built using C++ and OpenGL. Features include player movement, obstacle spawning, and score tracking.",
-  "s": ["C++", "OpenGL", "Game Dev"],
-  "u": "https://github.com/asadali552/pf-runner-game",
-  "img": ""
-}
+      "_id": "6a99387196e7b13760656d3a",
+      "t": "UrbanFix AI \u2014 Civic Action & Governance Platform",
+      "c": "Full-Stack AI Web Application",
+      "d": "AI-powered civic reporting and decision-support platform that turns citizen-reported problems into prioritized, trackable actions\u2014from evidence submission and AI analysis to authority assignment, resolution, and public verification.",
+      "problem": "Civic complaints are often fragmented, slow to prioritize, and difficult for citizens to track. UrbanFix creates a transparent workflow connecting citizens, authorities, and verified workers.",
+      "result": "Built an end-to-end civic workflow with explainable priority scoring, SLA tracking, evidence-based resolution, public accountability, and tamper-evident audit records.",
+      "s": [
+        "React",
+        "Vite",
+        "FastAPI",
+        "Python",
+        "MongoDB",
+        "Cloudinary",
+        "REST API",
+        "HTML",
+        "CSS",
+        "JS",
+        "Tailwind CSS"
+      ],
+      "img": "./assets/project-0.png",
+      "u": "https://urbanfixpk.vercel.app/",
+      "createdAt": "2026-09-03T09:05:53.716Z",
+      "updatedAt": "2026-09-03T09:05:53.716Z",
+      "__v": 0
+    },
+    {
+      "_id": "6a78cc048f43066346a95298",
+      "t": "Snake Game",
+      "c": "Game",
+      "d": "A classic Snake game built from scratch in Python using Turtle, featuring dynamic snake growth, food generation, collision detection, score tracking, keyboard controls, and multiple difficulty modes.",
+      "problem": "Turned a familiar game into a practical Python project to understand how movement, game loops, collision detection, and dynamic objects work together.",
+      "result": "Strengthened my understanding of Python fundamentals by applying them to a complete interactive game with real-time input, game-state management, and collision-based logic.",
+      "s": [
+        "Python",
+        "Turtle Library",
+        "OOP"
+      ],
+      "img": "./assets/project-1.png",
+      "u": "https://www.linkedin.com/posts/asad-ali-733481353_python-programming-softwareengineering-ugcPost-7492255442308435969-GLYV/?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAAFgrMtcByj7FP8Bwjx1jRbn8ZXq8BUhEbqM",
+      "createdAt": "2026-08-09T18:50:44.311Z",
+      "updatedAt": "2026-08-09T18:50:44.311Z",
+      "__v": 0
+    },
+    {
+      "_id": "6a733ee867d818a9ace8e6e0",
+      "t": "Live Weather Application",
+      "c": "Flutter",
+      "d": "A modern weather application developed using Flutter and Dart, leveraging the OpenWeatherMap API to retrieve and display live weather data. The project showcases REST API integration, HTTP requests, JSON serialization, asynchronous operations, and responsive mobile UI design.",
+      "problem": "Provides users with instant access to accurate, real-time weather information for any city through a simple and intuitive mobile interface, eliminating the need to browse multiple weather sources.",
+      "result": "",
+      "s": [
+        "Flutter",
+        "Dart",
+        "X Code",
+        "VS Code"
+      ],
+      "img": "./assets/project-2.png",
+      "u": "https://www.linkedin.com/posts/asad-ali-733481353_flutter-dart-softwareengineering-ugcPost-7488239508476362753-DaKA/?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAAFgrMtcByj7FP8Bwjx1jRbn8ZXq8BUhEbqM",
+      "createdAt": "2026-08-05T13:47:20.816Z",
+      "updatedAt": "2026-08-05T13:47:20.816Z",
+      "__v": 0
+    },
+    {
+      "_id": "69cff37c7590cccc3bbb5198",
+      "t": "2D Runner Game",
+      "c": "Game",
+      "d": "The is a 2D endless runner game with feature like coin collection, real time collision, limited live survival, life decrease with collision, score increase with time and speed increases as score increases and Ai object chasing Player after particular score.",
+      "problem": "My logic and problem solving skill.",
+      "result": "It enhanced my problem solving skills and made me think like real developers despite being a student.",
+      "s": [
+        "C++",
+        "OpenGl",
+        "Logic"
+      ],
+      "img": "",
+      "u": "https://github.com/asadali552/pf-runner-game",
+      "createdAt": "2026-04-03T17:06:04.653Z",
+      "updatedAt": "2026-04-03T17:06:04.653Z",
+      "__v": 0
+    }
   ]
 }
