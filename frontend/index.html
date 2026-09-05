@@ -2168,7 +2168,7 @@ button{font:inherit;cursor:pointer;border:0}a{color:inherit}.skip-link{position:
 'use strict';
 
 /* ─── CONFIG ──────────────────────────────────── */
-const API = window.PORTFOLIO_API || (['localhost','127.0.0.1'].includes(location.hostname) ? 'https://devworkbyasad.vercel.app' : '/api');
+const API = window.PORTFOLIO_API || 'https://devworkbyasad.vercel.app';
 
 /** @param {string} path Absolute path beginning with / (e.g. "/info") */
 function apiUrl(path) {
