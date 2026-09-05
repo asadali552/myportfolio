@@ -1964,6 +1964,23 @@ footer { width:var(--page); margin:0 auto 28px; padding:30px; border:1px solid v
 @media(max-width:720px){ :root{--page:min(100% - 32px,1120px)}#nav{width:calc(100% - 28px)}.nav-links,.btn-nav-cta{display:none}.menu-btn{display:flex}.mobile-menu{top:92px;left:14px;right:14px}.hero-proof{width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.hero-proof div{min-width:0;padding:14px 11px}.hero-proof strong{font-size:18px}.hero-proof span{font-size:8px}.projects-grid{grid-template-columns:1fr}.section-header{text-align:left}footer{flex-direction:column;gap:18px;text-align:center}}
 @media(max-width:520px){ #hero{padding-inline:18px}#hero #hero-h1{font-size:clamp(42px,12vw,58px)}.hero-desc{font-size:15px}.hero-ctas{width:100%}.btn-primary,.btn-outline{flex:1;justify-content:center;padding:0 16px}.skill-categories{grid-template-columns:1fr}.featured-body,.contact-form{padding:24px}.hero-proof{margin-top:40px}.signal-strip{display:none} }
 @media(prefers-reduced-motion:reduce){ .liquid-orb{animation:none!important} }
+/* Definitive glass/minimal theme. Shared surfaces keep all CMS views consistent. */
+:root{--page:min(1120px,calc(100% - 64px));--r-lg:24px;--r-xl:32px}
+[data-theme="dark"]{--bg:#0c1417;--bg-2:#111e22;--bg-3:#17292e;--bg-4:#21383e;--surface:rgba(25,43,48,.65);--ink:#f1f6f5;--ink-2:#aabfbe;--ink-3:#819b9a;--accent:#a0edcf;--accent-hi:#c8fbe6;--accent-a:#a0edcf;--accent-b:#a0edcf;--accent-c:#5f9ca9;--accent-2:#a0edcf12;--glass-border:#d5fff21f;--border:#d5fff21f;--border-2:#d5fff239;--nav-blur:rgba(18,32,36,.85)}
+[data-theme="light"]{--bg:#edf4f2;--bg-2:#f8fcfa;--bg-3:#e0eeea;--bg-4:#cfdfda;--surface:rgba(255,255,255,.7);--ink:#132e2a;--ink-2:#45665e;--ink-3:#527168;--accent:#176950;--accent-hi:#145b45;--accent-a:#176950;--accent-b:#176950;--accent-c:#578c92;--accent-2:#17695010;--glass-border:#164b3326;--border:#164b3326;--border-2:#164b3340;--nav-blur:rgba(245,252,248,.9)}
+body{background:var(--bg);cursor:auto}body::after{display:none}.liquid-orb{opacity:.2;filter:blur(100px)}.liquid-orb.one{left:30%;top:0}.liquid-orb.two{top:45%;opacity:.14}.liquid-orb.three{display:none}
+#nav{width:var(--page);max-width:1120px;top:24px;height:70px;padding:12px 20px 12px 28px;background:var(--nav-blur);border-radius:22px;box-shadow:0 12px 50px #00000015,inset 0 1px #ffffff16}#nav.scrolled{height:64px}.nav-wordmark{font-size:26px;letter-spacing:-1.5px}.nav-wordmark span{color:var(--accent);background:none}.nav-links a{font-size:14px}.nav-actions{gap:8px}.btn-nav-cta{background:transparent;color:var(--ink);border:1px solid var(--border-2);font-size:14px}.btn-theme{font-size:16px}.mobile-menu{background:var(--nav-blur)}
+#hero{padding:180px 0 80px;min-height:820px;text-align:left;overflow:visible}.hero-inner{width:var(--page);display:grid;grid-template-columns:1.25fr 1fr;gap:64px;align-items:center}.hero-copy{display:block;text-align:left}.hero-eyebrow{display:inline-flex;margin:0 0 30px;padding:0;border:0;background:none;box-shadow:none;font-size:14px}.hero-eyebrow .dot{box-shadow:none}
+#hero #hero-h1{font-size:clamp(48px,5.5vw,76px);font-weight:500;line-height:1.06;letter-spacing:-.065em;max-width:none;margin:0 0 28px}#hero-h1 span{display:block}#hero-h1 .h1-line-1{font-size:.67em;letter-spacing:-.045em;margin-bottom:16px;color:var(--ink-2)}#hero-h1 .h1-line-2::before{content:none}#hero-h1 .h1-line-3{background:none;color:var(--accent);white-space:normal}.hero-desc{font-size:17px;line-height:1.8;max-width:510px;margin:0}.hero-ctas{justify-content:flex-start;margin:32px 0 24px;gap:12px}.btn-primary,.btn-outline{font-size:14px;min-height:54px;border-radius:12px;padding:0 22px}.btn-primary,.form-submit,.abtn,.sac-btn{background:var(--accent);color:var(--bg)}.btn-primary:hover{background:var(--accent-hi);color:var(--bg);box-shadow:0 8px 24px #a0edcf15}.hero-status{padding:0;border:0;background:none}.status-text{font-size:12px}.hero-proof{margin-top:36px;justify-content:flex-start;gap:28px}.hero-proof div{min-width:0;border:0;border-radius:0;border-left:1px solid var(--border-2);padding:0 0 0 18px;background:none;box-shadow:none;backdrop-filter:none}.hero-proof strong{font-size:22px;color:var(--ink)}.hero-proof span{font-size:12px}.hero-scroll-cue{display:none}
+.hero-visual{display:block!important;min-height:0;width:100%;position:relative;perspective:none}.solution-card{border:1px solid var(--border-2);border-radius:28px;padding:30px;background:linear-gradient(145deg,#dffff514,#dffff503);backdrop-filter:blur(24px);box-shadow:0 30px 90px #0000001a,inset 0 1px #ffffff22;transform:rotate(3deg);animation:card-arrive 1s ease both}.solution-top{display:flex;align-items:center;gap:16px;color:var(--ink-2);font:12px var(--mono);letter-spacing:.06em}.solution-mark{display:grid;place-items:center;border-radius:12px;width:44px;height:44px;background:var(--accent);color:var(--bg);font:600 28px var(--serif)}.solution-spark{margin-left:auto;font-size:28px;color:var(--accent)}.solution-kicker{font:11px var(--mono);letter-spacing:.1em;color:var(--ink-2);margin:42px 0 18px}.solution-card h2{font:500 clamp(36px,3.6vw,50px)/1.08 var(--serif);letter-spacing:-.05em}.solution-description{font-size:14px;color:var(--ink-2);line-height:1.8;margin:20px 0 26px}.solution-steps>div{display:flex;gap:16px;align-items:center;border-top:1px solid var(--border);padding:17px 0;font-size:14px}.solution-steps span{font:12px var(--mono);color:var(--ink-3)}.solution-steps strong{font-weight:500}.solution-steps i{margin-left:auto;color:var(--accent);font-style:normal}.solution-bottom{font-size:12px;color:var(--ink-2);margin-top:18px;display:flex;gap:8px;align-items:center}.solution-bottom .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}.solution-note{display:flex;flex-direction:column;gap:8px;margin:12px -16px 0 65px;position:relative;background:var(--nav-blur);border:1px solid var(--border-2);border-radius:18px;padding:20px 24px;backdrop-filter:blur(20px);box-shadow:0 18px 50px #0002;animation:note-float 6s ease-in-out infinite}.solution-note span{font-size:12px;color:var(--ink-2)}.solution-note strong{font-size:15px;font-weight:500;color:var(--accent)}
+.signal-strip{background:none;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:22px 0}.signal-track{animation:none;justify-content:center;gap:32px;width:100%;flex-wrap:wrap}.signal-track span{font-size:12px;color:var(--ink-2);letter-spacing:.1em}.signal-track>*:nth-child(n+9){display:none}.signal-track i{font-size:12px;color:var(--accent)}
+section:not(#hero){padding:90px 0;background:none}.section-header{margin-bottom:40px;align-items:end}.section-label{font-size:12px!important;letter-spacing:.1em;color:var(--accent);margin-bottom:20px}.section-heading{font-size:clamp(34px,4vw,50px);font-weight:500;letter-spacing:-.05em;line-height:1.15}.section-heading em{font-style:normal;color:var(--ink-2);background:none}.section-note{font-size:14px;max-width:290px;line-height:1.7}.about-bio{font-size:18px!important;line-height:1.9}.featured-project,.project-card,.id-card,.skill-cat-card,.contact-form,.articles-list,.ai-banner{background:var(--surface)!important;border:1px solid var(--border)!important;box-shadow:inset 0 1px #ffffff0d,0 15px 60px #0000000c;backdrop-filter:blur(20px);border-radius:24px}.featured-project{grid-template-columns:1fr 1.15fr}.featured-img{min-height:340px;background:linear-gradient(135deg,#a0edcf16,#578c921a)}.project-placeholder{display:flex;align-items:center;flex-direction:column;gap:25px;color:var(--accent);font:72px var(--mono)}.project-placeholder small{font-size:11px;letter-spacing:.2em;color:var(--ink-2)}.featured-title{font-size:32px;letter-spacing:-.04em}.case-row,.project-desc{font-size:16px;line-height:1.8}.case-key,.tag,.scc-pill,.ai-tag{font-size:12px}.scc-name{font-size:18px}.currently-label,.form-label{font-size:14px}.form-input{font-size:16px;background:var(--bg-2)}.form-submit{font-size:15px;min-height:52px}.contact-sub{font-size:17px;line-height:1.8}.contact-link-row{font-size:14px}.ai-icon{display:none}.ai-banner{padding:36px}.ai-banner-desc{font-size:16px}.id-role,.id-row,.id-loc{font-size:14px}.article-title{font-size:22px}footer{border-radius:0;border:0;border-top:1px solid var(--border);background:none;box-shadow:none;padding:32px 0}.footer-copy,.footer-nav a{font-size:13px}#toast{background:var(--bg-2);color:var(--ink)}#admin-panel{background:var(--bg-2)}.reveal{transition:opacity .65s ease,transform .65s ease}a,button{touch-action:manipulation}:focus-visible{outline:2px solid var(--accent);outline-offset:5px}section{scroll-margin-top:90px}
+@keyframes note-float{50%{transform:translateY(-8px)}}@keyframes card-arrive{from{opacity:0;transform:translateY(25px) rotate(0)}to{opacity:1;transform:translateY(0) rotate(3deg)}}
+@media(max-width:1000px){.hero-inner{gap:36px}.solution-card{padding:24px}.nav-links{gap:16px}.hero-proof{gap:16px}.hero-proof span{font-size:12px}.solution-kicker{font-size:10px}.featured-project{grid-template-columns:1fr 1fr}}
+@media(max-width:800px){:root{--page:calc(100% - 40px)}#hero{padding:145px 0 64px;min-height:0}.hero-inner{grid-template-columns:1fr;gap:55px}.hero-copy{text-align:left}#hero #hero-h1{font-size:clamp(46px,9vw,72px)}.hero-visual{max-width:500px;margin:0 auto 15px}.hero-proof{display:flex;gap:24px}.hero-ctas{width:auto}.hero-proof div{padding:0 0 0 16px}.nav-links,.btn-nav-cta{display:none}.menu-btn{display:flex}.featured-project,.about-grid,.contact-grid{grid-template-columns:1fr}.section-header{display:block}.section-note{margin-top:20px}.signal-track{gap:20px}.signal-track span{font-size:10px}.featured-img{min-height:260px}section:not(#hero){padding:64px 0}.mobile-menu{top:102px}.contact-grid{gap:32px}}
+@media(max-width:480px){:root{--page:calc(100% - 36px)}#nav{top:16px;height:62px}.hero-desc{font-size:16px}.hero-ctas{flex-wrap:wrap}.btn-primary,.btn-outline{padding:0 16px;font-size:13px}.hero-proof{gap:15px}.hero-proof span{font-size:12px;max-width:90px}.hero-proof strong{font-size:20px}.solution-card{transform:none}.solution-note{margin-left:30px;margin-right:0}.solution-kicker{font-size:10px}.form-row{grid-template-columns:1fr}.featured-body,.contact-form{padding:24px}.id-card-body{padding:20px}.id-row{overflow-wrap:anywhere}.contact-link-row{overflow-wrap:anywhere}.signal-strip{display:block}.solution-description{font-size:14px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.reveal{opacity:1!important;transform:none!important}.solution-card{transform:none}}
+
 </style>
 </head>
 <body itemscope itemtype="https://schema.org/Person">
@@ -2000,7 +2017,7 @@ footer { width:var(--page); margin:0 auto 28px; padding:30px; border:1px solid v
 
 <!-- ═══════════ NAVIGATION ═══════════ -->
 <nav id="nav" role="navigation" aria-label="Main navigation">
-  <a class="nav-wordmark" href="/" aria-label="Asad Ali portfolio home">A<span>A</span>.dev</a>
+  <a class="nav-wordmark" href="/" aria-label="Asad Ali portfolio home">asad<span>.</span></a>
   <ul class="nav-links" role="list">
     <li><a href="#about">About</a></li>
     <li><a href="#skills">Skills</a></li>
@@ -2038,24 +2055,20 @@ footer { width:var(--page); margin:0 auto 28px; padding:30px; border:1px solid v
     </div>
 
     <h1 itemprop="name" id="hero-h1">
-      <span class="h1-line-1">Building software</span>
-      <span class="h1-line-2">that feels</span>
-      <span class="h1-line-3">inevitable.</span>
+      <span class="h1-line-1">Have a problem?</span>
+      <span class="h1-line-2">Let’s build a</span>
+      <span class="h1-line-3">tech solution.</span>
     </h1>
 
     <div style="position:relative;display:inline-block;z-index:10">
-      <p class="hero-desc" id="hero-tag" itemprop="description">
-        I'm Asad Ali — a full-stack developer and Software Engineering student at FAST NUCES,
-        crafting fast, considered web products with Node.js, MongoDB, and a growing focus on
-        <strong>AI-integrated systems.</strong>
-      </p>
+      <p class="hero-desc" id="hero-tag" itemprop="description">I'm Asad Ali, a developer and software engineering student. I turn everyday challenges into thoughtful websites, useful applications, and simpler digital experiences.</p>
       <button class="edit-btn" onclick="openInlineEditor('hero-tag','tag','Hero Tagline',3)" title="Edit tagline">✎</button>
       <div class="inline-editor" id="ie-hero-tag"></div>
     </div>
 
     <div class="hero-ctas" role="group" aria-label="Call to action">
-      <a class="btn-primary" href="#projects">View My Work →</a>
-      <a class="btn-outline" href="#contact">Let's Talk</a>
+      <a class="btn-primary" href="#projects">Explore my work ↗</a>
+      <a class="btn-outline" href="#contact">Discuss your idea ↗</a>
     </div>
 
     <div style="position:relative;display:inline-block;z-index:10">
@@ -2067,26 +2080,22 @@ footer { width:var(--page); margin:0 auto 28px; padding:30px; border:1px solid v
       <div class="inline-editor" id="ie-hero-status" style="top:0; left:110%;"></div>
     </div>
     <div class="hero-proof" aria-label="Portfolio highlights">
-      <div><strong id="stp">5+</strong><span>Projects shipped</span></div>
+      <div><strong id="stp">5+</strong><span>Projects built</span></div>
       <div><strong>FAST</strong><span>Software Engineering</span></div>
-      <div><strong>AI</strong><span>Currently deep-diving</span></div>
+      <div><strong>AI</strong><span>Exploring next</span></div>
     </div>
     </div>
 
-    <div class="hero-visual" aria-label="Asad Ali developer portrait">
-      <div class="visual-aura" aria-hidden="true"></div>
-      <div class="orbit orbit-one" aria-hidden="true"></div>
-      <div class="orbit orbit-two" aria-hidden="true"></div>
-      <div class="hero-portrait-wrap">
-        <img class="hero-portrait" id="hero-avatar" src="" alt="Asad Ali — Full Stack Developer">
-        <div class="hero-monogram" id="hero-monogram" aria-hidden="true">AA</div>
+    <div class="hero-visual" aria-label="How I approach a project">
+      <div class="solution-card">
+        <div class="solution-top"><span class="solution-mark">a.</span><span>IDEA → REALITY</span><span class="solution-spark">↗</span></div>
+        <p class="solution-kicker">GOOD TECH STARTS WITH A QUESTION</p>
+        <h2>“Could this<br>be simpler?”</h2>
+        <p class="solution-description">A better website. A smoother workflow.<br>A useful tool that didn’t exist yesterday.</p>
+        <div class="solution-steps"><div><span>01</span><strong>Understand the problem</strong><i>↗</i></div><div><span>02</span><strong>Design with purpose</strong><i>↗</i></div><div><span>03</span><strong>Build. Test. Improve.</strong><i>↗</i></div></div>
+        <div class="solution-bottom"><span class="dot"></span>Thoughtful code. Practical impact.</div>
       </div>
-      <div class="hero-float one" aria-hidden="true"><i></i> Systems thinking</div>
-      <div class="hero-float two" aria-hidden="true"><i></i> Open to selected work</div>
-      <div class="code-float" aria-hidden="true">
-        <div class="code-top"><span></span><span></span><span></span><em>build.js</em></div>
-        <code><b>const</b> product = {<br>&nbsp;&nbsp;fast: <i>true</i>,<br>&nbsp;&nbsp;useful: <i>true</i>,<br>&nbsp;&nbsp;crafted: <i>true</i><br>};</code>
-      </div>
+      <a href="#contact" class="solution-note"><span>Let’s figure it out together</span><strong>Start a conversation ↗</strong></a>
     </div>
   </div>
 
@@ -2104,13 +2113,31 @@ footer { width:var(--page); margin:0 auto 28px; padding:30px; border:1px solid v
 </div>
 
 
+<!-- ═══════════ PROJECTS ═══════════ -->
+<section id="projects" aria-label="Projects">
+<div class="container">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-label">01 / Selected work</div>
+      <h2 class="section-heading">Small ideas.<br><em>Real working projects.</em></h2>
+    </div>
+    <p class="section-note">Explore the code, the thinking, and what I learned.</p>
+  </div>
+
+  <div id="featured-wrap"></div>
+  <div class="projects-grid" id="projects-grid" role="list" aria-label="All projects">
+    <div class="spin" style="grid-column:1/-1" aria-label="Loading projects"></div>
+  </div>
+</div>
+</section>
+
 <!-- ═══════════ ABOUT ═══════════ -->
 <section id="about" aria-label="About" itemprop="mainContentOfPage">
 <div class="container">
   <div class="section-header reveal">
     <div>
-      <div class="section-label">01 / About</div>
-      <h2 class="section-heading">Beyond the stack.<br><em>I design outcomes.</em></h2>
+      <div class="section-label">02 / About</div>
+      <h2 class="section-heading">Curious by nature.<br><em>A builder by choice.</em></h2>
     </div>
   </div>
 
@@ -2176,10 +2203,10 @@ footer { width:var(--page); margin:0 auto 28px; padding:30px; border:1px solid v
 
     <div class="section-header reveal">
       <div>
-        <div class="section-label">02 / Services</div>
-        <h2 class="section-heading">From ambiguity<br>to <em>working product.</em></h2>
+        <div class="section-label">03 / Services</div>
+        <h2 class="section-heading">Your idea.<br><em>A clear way forward.</em></h2>
       </div>
-      <p class="section-note">Focused, high-quality work .</p>
+      <p class="section-note">Practical help, from the first conversation to the final details.</p>
     </div>
 
     <div class="reveal d1">
@@ -2214,8 +2241,8 @@ footer { width:var(--page); margin:0 auto 28px; padding:30px; border:1px solid v
 <div class="container">
   <div class="section-header reveal">
     <div>
-      <div class="section-label">03 / Capabilities</div>
-      <h2 class="section-heading">Tools are temporary.<br><em>Capability compounds.</em></h2>
+      <div class="section-label">04 / Capabilities</div>
+      <h2 class="section-heading">The tools behind<br><em>the solutions.</em></h2>
     </div>
     <p class="section-note">Tools I use daily — plus what I'm actively leveling up.</p>
   </div>
@@ -2250,7 +2277,7 @@ footer { width:var(--page); margin:0 auto 28px; padding:30px; border:1px solid v
 
         <!-- Editable description -->
         <div class="ai-desc-wrap" style="margin-top:8px">
-          <p class="ai-banner-desc" id="ai-banner-desc">Actively wiring AI into real web projects — APIs, intelligent UIs, smart automation. Not a buzzword. An actual skill being built right now.</p>
+          <p class="ai-banner-desc" id="ai-banner-desc">Exploring how AI APIs and automation can make everyday tasks easier. Learning through hands-on web projects.</p>
           <button class="ai-edit-btn" onclick="openInlineEditor('ai-banner-desc','aiDesc','Banner Description',3)" title="Edit description">✎</button>
           <div class="inline-editor" id="ie-ai-banner-desc" style="min-width:320px"></div>
         </div>
@@ -2266,31 +2293,13 @@ footer { width:var(--page); margin:0 auto 28px; padding:30px; border:1px solid v
 </div>
 </section>
 
-<!-- ═══════════ PROJECTS ═══════════ -->
-<section id="projects" aria-label="Projects">
-<div class="container">
-  <div class="section-header reveal">
-    <div>
-      <div class="section-label">04 / Selected work</div>
-      <h2 class="section-heading">Proof over promises.<br><em>Built to be used.</em></h2>
-    </div>
-    <p class="section-note">Things I've actually built. Real code, real results.</p>
-  </div>
-
-  <div id="featured-wrap"></div>
-  <div class="projects-grid" id="projects-grid" role="list" aria-label="All projects">
-    <div class="spin" style="grid-column:1/-1" aria-label="Loading projects"></div>
-  </div>
-</div>
-</section>
-
 <!-- ═══════════ ARTICLES ═══════════ -->
 <section id="articles" aria-label="Articles and writing">
 <div class="container">
   <div class="section-header reveal">
     <div>
       <div class="section-label">05 / Writing</div>
-      <h2 class="section-heading">Thinking in public.<br><em>Learning in motion.</em></h2>
+      <h2 class="section-heading">Notes from<br><em>the learning process.</em></h2>
     </div>
     <p class="section-note">I write about what I'm learning — web, AI, SE at FAST.</p>
   </div>
@@ -2349,10 +2358,10 @@ footer { width:var(--page); margin:0 auto 28px; padding:30px; border:1px solid v
   <div class="contact-grid">
     <div class="reveal">
       <div class="section-label">06 / Contact</div>
-      <h2 class="section-heading">Start with a problem.<br><em>Leave with momentum.</em></h2>
-      <p class="contact-sub">Have a project? I reply within 24 hours.<br>No fluff, just results.</p>
+      <h2 class="section-heading">What can we<br><em>solve together?</em></h2>
+      <p class="contact-sub">Tell me what you’re working on, what’s getting in the way, and how I can help.</p>
       <div class="contact-links" role="list">
-        <div class="contact-link-row" onclick="window.location='mailto:connect.asadali8@gmail.com'" role="listitem" tabindex="0" aria-label="Email">
+        <div class="contact-link-row" onclick="window.location='mailto:connect.asadali8@gmail.com'" role="listitem" tabindex="0" onkeydown="if(event.key==='Enter')this.click()" aria-label="Email">
           <span class="cl-icon">✉️</span><span id="ci-email-text">connect.asadali8@gmail.com</span>
         </div>
         <div class="contact-link-row" id="ci-gh" style="display:none" role="listitem"><span class="cl-icon">🐙</span><span>GitHub</span></div>
@@ -2392,7 +2401,7 @@ footer { width:var(--page); margin:0 auto 28px; padding:30px; border:1px solid v
           <button type="submit" class="form-submit" id="form-submit-btn">Send Message →</button>
         </form>
         <div class="social-row" role="group" aria-label="Social links">
-          <div class="social-btn" onclick="window.location='mailto:connect.asadali8@gmail.com'" role="button" tabindex="0">✉️ Email</div>
+          <div class="social-btn" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="window.location='mailto:connect.asadali8@gmail.com'" role="button" tabindex="0">✉️ Email</div>
           <div class="social-btn" id="soc-gh" style="display:none" role="button" tabindex="0">🐙 GitHub</div>
           <div class="social-btn" id="soc-li" style="display:none" role="button" tabindex="0">💼 LinkedIn</div>
           <div class="social-btn" id="soc-fv" style="display:none" role="button" tabindex="0">🎯 Fiverr</div>
@@ -2577,9 +2586,7 @@ footer { width:var(--page); margin:0 auto 28px; padding:30px; border:1px solid v
 'use strict';
 
 /* ─── CONFIG ──────────────────────────────────── */
-const API = window.location.hostname === 'localhost'
-  ? 'http://localhost:3000'
-  : 'https://devworkbyasad.vercel.app';
+const API = window.PORTFOLIO_API || 'https://devworkbyasad.vercel.app';
 
 /** @param {string} path Absolute path beginning with / (e.g. "/info") */
 function apiUrl(path) {
@@ -3489,7 +3496,7 @@ function renderProjects(projects){
     fw.innerHTML=`
       <article class="featured-project reveal" itemscope itemtype="https://schema.org/CreativeWork">
         <div class="featured-img">
-          ${feat.img?`<img src="${feat.img}" alt="${escapeHtml(feat.t)} — project screenshot by Asad Ali" loading="lazy" itemprop="image">`:'🖼️'}
+          ${feat.img?`<img src="${feat.img}" alt="${escapeHtml(feat.t)} — project screenshot by Asad Ali" loading="lazy" itemprop="image">`:'<span class="project-placeholder" aria-hidden="true">&lt;/&gt;<small>BUILT FROM AN IDEA</small></span>'}
           ${feat.u?`<div class="featured-img-overlay"><a class="overlay-btn" href="${feat.u}" target="_blank" rel="noopener noreferrer">${projectLinkLabel(feat.u)}</a></div>`:''}
         </div>
         <div class="featured-body">
@@ -3510,7 +3517,7 @@ function renderProjects(projects){
   grid.innerHTML=rest.map(p=>`
     <article class="project-card" role="listitem" itemscope itemtype="https://schema.org/CreativeWork">
       <div class="project-thumb">
-        ${p.img?`<img src="${p.img}" alt="${escapeHtml(p.t)} project by Asad Ali" loading="lazy" itemprop="image">`:'🖼️'}
+        ${p.img?`<img src="${p.img}" alt="${escapeHtml(p.t)} project by Asad Ali" loading="lazy" itemprop="image">`:'<span class="project-placeholder" aria-hidden="true">&lt;/&gt;<small>BUILT FROM AN IDEA</small></span>'}
         ${p.u?`<div class="project-overlay"><a class="overlay-btn" href="${p.u}" target="_blank" rel="noopener noreferrer">${projectLinkLabel(p.u)}</a></div>`:''}
       </div>
       <div class="project-body">
