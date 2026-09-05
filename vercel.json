@@ -40,6 +40,10 @@
       "dest": "frontend/data.json"
     },
     {
+      "src": "/assets/(.*)",
+      "dest": "frontend/assets/$1"
+    },
+    {
       "src": "/(.*)",
       "dest": "frontend/index.html"
     }
